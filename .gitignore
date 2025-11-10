@@ -1,0 +1,30 @@
+# === Spring Boot / Maven ===
+proto-back/target/
+proto-back/.mvn/
+proto-back/.idea/
+proto-back/*.iml
+proto-back/*.log
+
+# === React / Node ===
+proto-front/node_modules/
+proto-front/build/
+proto-front/dist/
+proto-front/.idea/
+proto-front/*.iml
+proto-front/npm-debug.log*
+proto-front/yarn-debug.log*
+proto-front/yarn-error.log*
+
+# === OS spécifiques ===
+.DS_Store
+__MACOSX/
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# === Environnements / Autres ===
+.env
+.env.local
+*.zip
+*.tar
+*.rar
