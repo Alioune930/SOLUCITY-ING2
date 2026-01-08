@@ -6,14 +6,14 @@ proto-back/*.iml
 proto-back/*.log
 
 # === React / Node ===
-proto-front/node_modules/
-proto-front/build/
-proto-front/dist/
-proto-front/.idea/
+webapp/node_modules/
+webapp/build/
+webapp/dist/
+webapp/.idea/
 proto-front/*.iml
-proto-front/npm-debug.log*
-proto-front/yarn-debug.log*
-proto-front/yarn-error.log*
+webapp/npm-debug.log*
+webapp/yarn-debug.log*
+webapp/yarn-error.log*
 
 # === OS spécifiques ===
 .DS_Store
