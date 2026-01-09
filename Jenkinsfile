@@ -55,7 +55,10 @@ pipeline {
 
                             docker network create app-net || true
 
-                            docker run -d --name api-int --network app-net -p 8080:8080 ${NEXUS_URL}/backend:main-latest
+                            # Backend avec alias "backend" pour Nginx
+                            docker run -d --name api-int --hostname backend --network app-net -p 8080:8080 ${NEXUS_URL}/backend:main-latest
+
+                            # Frontend sur le même réseau
                             docker run -d --name web-int --network app-net -p 80:80 ${NEXUS_URL}/frontend:main-latest
                         '
                     """
