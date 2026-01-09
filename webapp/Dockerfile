@@ -1,15 +1,20 @@
-# Build de React
-#FROM node:20-alpine AS builder
-#WORKDIR /app
-#COPY package*.json ./
-#RUN npm ci
-#COPY . .
-#RUN npm run build
+#frontend
+FROM node:20-alpine AS build
+WORKDIR /app
 
-# Service du front end avec Nginx
-FROM nginx:1.24-alpine
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY build /usr/share/nginx/html
+COPY package.json package-lock.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+FROM nginx:stable-alpine
+RUN rm /etc/nginx/conf.d/default.conf
+COPY platform/nginx.conf /etc/nginx/nginx.conf
+COPY platform/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build /usr/share/nginx/html
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
+
+
