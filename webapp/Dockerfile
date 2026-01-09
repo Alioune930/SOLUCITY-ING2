@@ -2,10 +2,10 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY webapp/package.json webapp/package-lock.json ./
 RUN npm install
 
-COPY . .
+COPY webapp/ .
 RUN npm run build
 
 FROM nginx:stable-alpine
