@@ -6,6 +6,7 @@ pipeline {
         NEXUS_CREDS = credentials('nexus-credentials-id')
         VM_INT_IP = "192.168.1.102"
         VM_INT_USER = "solucity_int"
+        VM_INT_PASS = credentials('ssh-password-int-id') // SSH password
     }
 
     stages {
@@ -20,7 +21,6 @@ pipeline {
                 script {
                     sh "echo ${NEXUS_CREDS_PSW} | docker login ${NEXUS_URL} -u ${NEXUS_CREDS_USR} --password-stdin"
 
-                    // Tag avec numéro de build pour l'historique
                     def tag = "main-${BUILD_NUMBER}"
 
                     sh "docker build -t ${NEXUS_URL}/backend:${tag} ./api"
@@ -28,7 +28,6 @@ pipeline {
 
                     sh "docker push ${NEXUS_URL}/backend:${tag}"
                     sh "docker push ${NEXUS_URL}/frontend:${tag}"
-
 
                     sh "docker tag ${NEXUS_URL}/backend:${tag} ${NEXUS_URL}/backend:main-latest"
                     sh "docker tag ${NEXUS_URL}/frontend:${tag} ${NEXUS_URL}/frontend:main-latest"
@@ -43,9 +42,9 @@ pipeline {
                 branch 'main'
             }
             steps {
-                sshagent(['ssh-credentials-int-id']) {
+                script {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${VM_INT_USER}@${VM_INT_IP} '
+                        sshpass -p '${VM_INT_PASS}' ssh -o StrictHostKeyChecking=no ${VM_INT_USER}@${VM_INT_IP} '
                             docker login ${NEXUS_URL} -u ${NEXUS_CREDS_USR} -p ${NEXUS_CREDS_PSW}
 
                             docker stop api-int web-int || true
