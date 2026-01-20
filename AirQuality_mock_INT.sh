@@ -66,6 +66,7 @@ while IFS="|" read -r ID PROFIL; do
     EXIST=$(psql -h $DB_HOST -U $DB_USER -d $DB_NAME -t -A \
         -c "SELECT id_mesure FROM mesure_pollution WHERE id_capteur='$ID' ORDER BY id_mesure DESC LIMIT 1;")
 
+    echo "Update des données pollution dans la BDD"
     if [[ -z "$EXIST" ]]; then
         # Aucune mesure trouvée on INSERT
         psql -h $DB_HOST -U $DB_USER -d $DB_NAME \
@@ -130,6 +131,7 @@ while IFS="|" read -r ID LIEU; do
     EXIST=$(psql -h $DB_HOST -U $DB_USER -d $DB_NAME -t -A \
         -c "SELECT id_mesure FROM mesure_meteo WHERE id_capteur='$ID' ORDER BY id_mesure DESC LIMIT 1;")
 
+    echo "Update des données meteo dans la BDD"
     if [[ -z "$EXIST" ]]; then
         # Aucune mesure trouvée on INSERT
         psql -h $DB_HOST -U $DB_USER -d $DB_NAME \
@@ -147,4 +149,9 @@ while IFS="|" read -r ID LIEU; do
 
 done <<< "$CAPTEURS_METEO"
 
-echo "Terminé."
+echo "Notification à l'API"
+
+curl -X POST http://172.31.249.83:8082/air-quality/update-data
+
+
+echo "Terminé"
