@@ -1,12 +1,12 @@
+// src/App.js
 import React from 'react';
-import logo from '../assets/logo.jpeg';
-import '../styles/App.css';
+import MapPage from './MapPage'; 
 
 export default function App() {
   return (
-    <div className="App">
-
-        <img src={logo} alt="logo" />
+    <div style={{ padding: '20px' }}>
+      <h1>Bienvenue sur Solucity</h1>
+      <p>Ceci est la page d'accueil.</p>
     </div>
   );
 }
