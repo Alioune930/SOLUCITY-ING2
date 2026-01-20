@@ -1,33 +1,34 @@
+# IDE / Éditeurs
+.vscode/
+.idea/
+*.iml
+
+# Node / React
+node_modules/
+build/
+dist/
+
+# Logs et fichiers temporaires
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 # Spring Boot / Maven
-proto-back/target/
-proto-back/.mvn/
-proto-back/.idea/
-proto-back/*.iml
-proto-back/*.log
+api/target/
+api/.mvn/
+api/*.log
 
-#  React / Node 
-proto-front/node_modules/
-proto-front/build/
-proto-front/dist/
-proto-front/.idea/
-proto-front/*.iml
-proto-front/npm-debug.log*
-proto-front/yarn-debug.log*
-proto-front/yarn-error.log*
-
-# OS spécifiques 
+# Fichiers OS spécifiques
 .DS_Store
 __MACOSX/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# Environnements / Autres 
+
+# Environnements / Archives
 .env
 .env.local
 *.zip
 *.tar
 *.rar
-node_modules
-node_modules
-node_modules
