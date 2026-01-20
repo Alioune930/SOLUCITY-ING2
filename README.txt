@@ -8,7 +8,9 @@ TIENDREBEOGO Moumouni
 ADAMALY Clara
 
 Mock pollution/météo : Générer les données mock pour tous les capteurs (pollution + météo)
+-> creation du mock + api rest pour notification mise à jour BDD
 US 1 : Créer les polygones Voronoï autour de points définis
+-> En cours
 US 2 : Visualisation des polygones
 US 3 : Afficher le score global par quartier
 US 4 : Afficher libellés et correspondance couleur pour chaque score
