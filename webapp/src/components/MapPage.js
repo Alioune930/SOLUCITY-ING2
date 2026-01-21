@@ -9,7 +9,9 @@ import {
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import roads from '../data/honfleur-roads.json';
+import honfleurGeoJSON from '../data/Honfleur-contours.json';
 import L from 'leaflet';
+
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -22,16 +24,12 @@ export default function MapPage() {
   const [mode, setMode] = useState('ClimateMap');
   const center = [49.4194, 0.2329];
 
-  // Contour de Honfleur
-  const honfleurBoundary = [
-    [49.4245, 0.2295],
-    [49.4250, 0.2345],
-    [49.4220, 0.2380],
-    [49.4180, 0.2385],
-    [49.4155, 0.2350],
-    [49.4160, 0.2305],
-  ];
+  //le contour
+  const honfleurBoundary = honfleurGeoJSON.features[0].geometry.coordinates[0].map(
+    coord => [coord[1], coord[0]]
+  );
 
+  //si un point est dans un polygone
   const isPointInPolygon = (point, polygon) => {
     const [x, y] = point;
     let inside = false;
@@ -46,34 +44,22 @@ export default function MapPage() {
     return inside;
   };
 
-  // Quadrillage ClimateMap
+  // QUADRILLAGE
   const topLeft = [49.425, 0.229];
   const bottomRight = [49.415, 0.239];
-  const rows = 10;
-  const cols = 10;
+  const rows = 30; 
+  const cols = 30;
   const latStep = (topLeft[0] - bottomRight[0]) / rows;
   const lngStep = (bottomRight[1] - topLeft[1]) / cols;
 
   const grid = [];
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
-      const sw = [
-        topLeft[0] - latStep * (i + 1),
-        topLeft[1] + lngStep * j
-      ];
-      const ne = [
-        topLeft[0] - latStep * i,
-        topLeft[1] + lngStep * (j + 1)
-      ];
-      const centerCell = [
-        (sw[0] + ne[0]) / 2,
-        (sw[1] + ne[1]) / 2
-      ];
+      const sw = [topLeft[0] - latStep * (i + 1), topLeft[1] + lngStep * j];
+      const ne = [topLeft[0] - latStep * i, topLeft[1] + lngStep * (j + 1)];
+      const centerCell = [(sw[0] + ne[0]) / 2, (sw[1] + ne[1]) / 2];
       if (isPointInPolygon(centerCell, honfleurBoundary)) {
-        grid.push({
-          bounds: [sw, ne],
-          pollution: Math.floor(Math.random() * 100)
-        });
+        grid.push({ bounds: [sw, ne], pollution: Math.floor(Math.random() * 100) });
       }
     }
   }
@@ -84,7 +70,7 @@ export default function MapPage() {
     return 'red';
   };
 
-  // Filtrage des routes
+  // Filtrage des routes 
   const filterMajorRoadsInCity = (roads, boundary) => {
     const majorTypes = ['primary', 'secondary', 'tertiary', 'trunk'];
     return {
@@ -100,16 +86,16 @@ export default function MapPage() {
 
   const roadsInCity = filterMajorRoadsInCity(roads, honfleurBoundary);
 
-  // Style des routes avec simulation
+  // état des routes 
   const getRoadStyle = (feature) => {
     const congestion = feature.properties.congestion ||
-                       ['fluid', 'dense', 'jammed'][Math.floor(Math.random() * 3)];
+                       ['fluide', 'dense', 'jammed'][Math.floor(Math.random() * 3)];
     const status = feature.properties.status ||
-                   ['open', 'closed', 'works'][Math.floor(Math.random() * 3)];
+                   ['ouvert', 'fermé', 'Travaux'][Math.floor(Math.random() * 3)];
 
     const baseColor = congestion === 'fluide' ? 'green' :
                       congestion === 'dense' ? 'orange' : 'red';
-    const weight = status === 'closed' ? 6 : 4;
+    const weight = status === 'fermé' ? 6 : 4;
     const dashArray = status === 'Travaux' ? '8 6' : null;
 
     return { color: baseColor, weight, dashArray };
@@ -127,6 +113,7 @@ export default function MapPage() {
       </div>
 
       <MapContainer center={center} zoom={15} style={{ height: '90vh' }}>
+        {/* Fond de carte */}
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="© OpenStreetMap contributors"
@@ -138,44 +125,40 @@ export default function MapPage() {
           pathOptions={{ color: 'black', weight: 3, fillOpacity: 0 }}
         />
 
-        {mode === 'ClimateMap' && (
-          <>
-            {grid.map((cell, index) => (
-              <Rectangle
-                key={index}
-                bounds={cell.bounds}
-                pathOptions={{ color: getColor(cell.pollution), weight: 1, fillOpacity: 0.4 }}
-              >
-                <Tooltip>
-                  Pollution : {cell.pollution}<br />
-                  Qualité air : OK<br />
-                  Confort climatique : Normal
-                </Tooltip>
-              </Rectangle>
-            ))}
-          </>
-        )}
+        {/* ClimateMap */}
+        {mode === 'ClimateMap' &&
+          grid.map((cell, index) => (
+            <Rectangle
+              key={index}
+              bounds={cell.bounds}
+              pathOptions={{ color: getColor(cell.pollution), weight: 1, fillOpacity: 0.4 }}
+            >
+              <Tooltip>
+                Pollution : {cell.pollution}<br/>
+                Qualité air : OK<br/>
+                Confort climatique : Normal
+              </Tooltip>
+            </Rectangle>
+          ))
+        }
 
-        {mode === 'RoadMap' && (
-          <>
-            <GeoJSON
-              data={roadsInCity}
-              style={getRoadStyle}
-              onEachFeature={(feature, layer) => {
-                // Simulation tooltip si non défini avant
-                const congestion = feature.properties.congestion ||
-                                   ['fluide', 'dense', 'interrompu'][Math.floor(Math.random() * 3)];
-                const status = feature.properties.status ||
-                               ['ouvert', 'fermé', 'Travaux'][Math.floor(Math.random() * 3)];
-                const name = feature.properties.name || 'Route inconnue';
-
-                layer.bindTooltip(
-                  `<strong>${name}</strong><br/>État : ${status}<br/>Congestion : ${congestion}`
-                );
-              }}
-            />
-          </>
-        )}
+        {/* RoadMap */}
+        {mode === 'RoadMap' &&
+          <GeoJSON
+            data={roadsInCity}
+            style={getRoadStyle}
+            onEachFeature={(feature, layer) => {
+              const congestion = feature.properties.congestion ||
+                                 ['fluide', 'dense', 'interrompu'][Math.floor(Math.random() * 3)];
+              const status = feature.properties.status ||
+                             ['ouvert', 'fermé', 'Travaux'][Math.floor(Math.random() * 3)];
+              const name = feature.properties.name || 'Route inconnue';
+              layer.bindTooltip(
+                `<strong>${name}</strong><br/>État : ${status}<br/>Congestion : ${congestion}`
+              );
+            }}
+          />
+        }
       </MapContainer>
     </div>
   );
