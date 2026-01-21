@@ -12,8 +12,9 @@ Mock pollution/météo : Générer les données mock pour tous les capteurs (pol
 US 1 : Créer les polygones Voronoï autour de points définis
 -> Terminé : création des polygones avec postgis et REST API pour les zones
 US 2 : Visualisation des polygones
--> En cours
+-> Terminé : ajout du path de l'api zones dans back.js pour que le front puisse récupérer et afficher les polygones
 US 3 : Afficher le score global par quartier
+-> En cours
 US 4 : Afficher libellés et correspondance couleur pour chaque score
 US 5 : Visualisation des polygones avec score global de pollution, couleur et libellé
 
