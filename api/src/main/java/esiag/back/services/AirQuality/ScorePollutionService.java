@@ -53,7 +53,7 @@ public class ScorePollutionService {
                 float sousIndicepm10Aj = PollutionCalculator.calculeSousIndicePM10(pm10Aj);
                 float sousIndicepm25Aj = PollutionCalculator.calculeSousIndicePM25(pm25Aj);
 
-                float score_global = Math.max(no2Aj,Math.max(pm10Aj,pm25Aj));
+                float score_global = Math.max(sousIndiceNo2,Math.max(sousIndiceNo2,sousIndiceNo2));
 
                 String[] libelleCouleur = PollutionCalculator.calculLibelleCouleur(score_global);
                 String libelle = libelleCouleur[0];
