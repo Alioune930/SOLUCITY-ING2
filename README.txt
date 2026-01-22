@@ -17,9 +17,9 @@ US 2 : Visualisation des polygones
 US 3 : Afficher le score global par quartier
 -> Terminé : calcule des scores de pollution
 US 4 : Afficher libellés et correspondance couleur pour chaque score
--> Terminé
+-> Terminé : ajout methode pour detreminé libellé et couleur en fonction du score
 US 5 : Visualisation des polygones avec score global de pollution, couleur et libellé
--> En cours
+-> Terminé : ajout des scores, libellé et couleur dans l'API pour les zones
 
 **R2**
 US 6 : Afficher score global de pollution pour une adresse donnée (point)
