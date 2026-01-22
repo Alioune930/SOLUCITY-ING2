@@ -15,6 +15,8 @@ public class ScorePollutionZone {
     private float sousIndicePm10;
     private float sousIndicePm25;
     private float scoreGlobalPollution;
+    private String LibellePollution;
+    private String CouleurPollution;
     private LocalDateTime dateMesure;
 
 
