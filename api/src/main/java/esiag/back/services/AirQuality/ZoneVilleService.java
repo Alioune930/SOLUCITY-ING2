@@ -35,6 +35,9 @@ public class ZoneVilleService {
             properties.put("ville", ville);
 
             feature.put("properties", properties);
+            properties.put("score_pollution", 75);
+            properties.put("libelle_pollution", "Moyen");
+            properties.put("couleur", "#FFA500");
 
             try {
                 feature.put("geometry", objectMapper.readValue(geometryJson, Map.class));
