@@ -42,17 +42,17 @@ TIENDREBEOGO Moumouni Alioune
 
 US1.1 – Afficher la carte avec le fond cartographique --- (Done)
 
-US1.2 – Afficher la carte de ma ville et sa répartition en zones (position + zones analysées)
+US1.2 – Afficher la carte de ma ville et sa répartition en zones (position + zones analysées) --(Done)
 
-US1.3 – Ajouter la représentation du trafic routier à la répartition en zones
+US1.3 – Ajouter la représentation du trafic routier à la répartition en zones (Done but with static Json data)
 
-US1.4 – Afficher le niveau de congestion et le statut des routes
+US1.4 – Afficher le niveau de congestion et le statut des routes (Done but with random static data)
 
-US1.5 – Afficher les zones de pollution, la qualité de l’air et le confort climatique
+US1.5 – Afficher les zones de pollution, la qualité de l’air et le confort climatique -- (Done)
 
-US1.6 – Afficher les légendes et tooltips dynamiques
+US1.6 – Afficher les légendes et tooltips dynamiques --  (Done)
 
-US1.7 – Actualisation en temps réel
+US1.7 – Actualisation en temps réel - (Done)
 
 
 **** UC2 – Filtrer et personnaliser la carte
