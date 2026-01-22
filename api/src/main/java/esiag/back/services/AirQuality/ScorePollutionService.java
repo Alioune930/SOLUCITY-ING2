@@ -55,6 +55,10 @@ public class ScorePollutionService {
 
                 float score_global = Math.max(no2Aj,Math.max(pm10Aj,pm25Aj));
 
+                String[] libelleCouleur = PollutionCalculator.calculLibelleCouleur(score_global);
+                String libelle = libelleCouleur[0];
+                String couleur = libelleCouleur[1];
+
                 ScorePollutionZone spz = new ScorePollutionZone();
 
                 spz.setZoneId(zoneId);
@@ -65,6 +69,8 @@ public class ScorePollutionService {
                 spz.setSousIndicePm10(sousIndicepm10Aj);
                 spz.setSousIndicePm25(sousIndicepm25Aj);
                 spz.setScoreGlobalPollution(score_global);
+                spz.setLibellePollution(libelle);
+                spz.setCouleurPollution(couleur);
                 spz.setDateMesure(LocalDateTime.now());
 
                 scorePollutionZones.add(spz);

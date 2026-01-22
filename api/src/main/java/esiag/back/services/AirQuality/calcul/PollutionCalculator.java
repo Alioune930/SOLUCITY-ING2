@@ -55,5 +55,23 @@ public class PollutionCalculator {
         return Math.min((indicePm25Ajuste / MaxPollutionConstants.PM25_MAX) * 100f, 100f);
     }
 
+    public static String[] calculLibelleCouleur(float scoreGlobal) {
+        if (scoreGlobal <= 20) {
+            return new String[]{"Très bon", "#006400"}; //vert foncé
+        } else if (scoreGlobal <= 40) {
+            return new String[]{"Bon", "#008000"}; //vert
+        } else if (scoreGlobal <= 60) {
+            return new String[]{"Moyen", "#FFFF00"}; //jaune
+        } else if (scoreGlobal <= 75) {
+            return new String[]{"Dégradé", "#FFA500"}; //orange
+        } else if (scoreGlobal <= 90) {
+            return new String[]{"Mauvais", "#FF0000"}; //rouge
+        } else if (scoreGlobal <= 100) {
+            return new String[]{"Très mauvais", "#8B00FF"}; //violet
+        } else {
+            return new String[]{"Extrême", "#8B4513"}; //marron
+        }
+    }
+
 
 }
