@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class CapteurMeteoLight {
 
-    private String idCapteurPollution;
+    private String idCapteurMeteo;
     private String ville;
 
 
