@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CapteurPollutionRepository extends JpaRepository<CapteurPollution, String> {
 
-    @Query(value = " SELECT cp.id_capteur, cp.ville " +
+    @Query(value = " SELECT cp.id_capteur AS IdCapteurPollution , cp.ville " +
     " FROM capteur_pollution cp JOIN zone_ville zv ON zv.id_capteur = cp.id_capteur " +
     " WHERE zv.id = :zoneId ", nativeQuery = true)
     List<CapteurPollutionLight> findCapteurPollutionInZone(Long zoneId);

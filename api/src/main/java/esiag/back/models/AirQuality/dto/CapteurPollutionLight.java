@@ -1,11 +1,9 @@
 package esiag.back.models.AirQuality.dto;
 
-import lombok.Data;
 
-@Data
-public class CapteurPollutionLight {
+public interface CapteurPollutionLight {
 
-    private String idCapteurPollution;
-    private String ville;
+    String getIdCapteurPollution();
+    String getVille();
 
 }

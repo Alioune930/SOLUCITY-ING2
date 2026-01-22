@@ -1,12 +1,9 @@
 package esiag.back.models.AirQuality.dto;
 
-import lombok.Data;
+public interface DonneePollution {
 
-@Data
-public class DonneePollution {
-
-    Float no2;
-    Float pm10;
-    Float pm25;
+    Float getNo2();
+    Float getPm10();
+    Float getPm25();
 
 }

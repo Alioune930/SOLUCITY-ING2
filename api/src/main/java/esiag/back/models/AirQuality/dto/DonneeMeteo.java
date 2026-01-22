@@ -1,13 +1,10 @@
 package esiag.back.models.AirQuality.dto;
 
-import lombok.Data;
+public interface DonneeMeteo {
 
-@Data
-public class DonneeMeteo {
-
-    Float vitesseVent;
-    Float temperature;
-    Float humidite;
+    Float getVitesseVent();
+    Float getTemperature();
+    Float getHumidite();
 
 
 }
