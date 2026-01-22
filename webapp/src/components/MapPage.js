@@ -6,7 +6,7 @@ export default function MapPage() {
   const [mode, setMode] = useState("ClimateMap");
 
   return (
-    <div style={{ height: "100vh", width: "100%" }}>
+    <div style={{ height: "100vh", width: "100%", display: "flex", flexDirection: "column" }}>
       {/* Switch entre les modes */}
       <div style={{ padding: "10px", background: "#f0f0f0" }}>
         <select value={mode} onChange={e => setMode(e.target.value)}>
@@ -15,9 +15,16 @@ export default function MapPage() {
         </select>
       </div>
 
+      {/* Titre au-dessus de la carte */}
+      <h1 style={{ textAlign: "center", margin: "10px 0", fontSize: "20px", fontWeight: "bold" }}>
+        Honfleur – Real-Time Environmental Indicators
+      </h1>
+
       {/* Affichage du mode sélectionné */}
-      {mode === "ClimateMap" && <ClimateMap />}
-      {mode === "RoadMap" && <RoadMap />}
+      <div style={{ flexGrow: 1 }}>
+        {mode === "ClimateMap" && <ClimateMap />}
+        {mode === "RoadMap" && <RoadMap />}
+      </div>
     </div>
   );
 }
