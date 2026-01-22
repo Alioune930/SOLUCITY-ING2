@@ -1,4 +1,4 @@
-package esiag.back.models.AirQuality;
+package esiag.back.models.AirQuality.entity;
 
 import lombok.Data;
 import org.locationtech.jts.geom.MultiPolygon;
