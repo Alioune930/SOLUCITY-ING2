@@ -59,7 +59,7 @@ public class PollutionCalculator {
         if (scoreGlobal <= 20) {
             return new String[]{"Très bon", "#006400"}; //vert foncé
         } else if (scoreGlobal <= 40) {
-            return new String[]{"Bon", "#008000"}; //vert
+            return new String[]{"Bon", "#66BB6A"}; //vert clair
         } else if (scoreGlobal <= 60) {
             return new String[]{"Moyen", "#FFFF00"}; //jaune
         } else if (scoreGlobal <= 75) {
