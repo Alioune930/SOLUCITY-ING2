@@ -15,41 +15,57 @@ const ClimateMap = () => {
       .catch(err => console.error("Erreur chargement GeoJSON :", err));
   }, []);
 
-  const zoneStyle = {
-    color: "#3388ff",
+  const zoneStyle = (feature) => ({
+    color: feature.properties.couleur,
     weight: 2,
-    fillOpacity: 0.1
-  };
+    fillColor: feature.properties.couleur,
+    fillOpacity: 0.5
+  });
 
-  const honfleurBoundary = honfleurContours.features[0].geometry.coordinates[0].map(
-    c => [c[1], c[0]]
-  );
-
-  // Fonction pour gérer le clic sur une zone et afficher un popup
   const onEachZone = (feature, layer) => {
-    layer.on("click", (e) => {
-      const zoneId = feature.id !== undefined ? feature.id : "Zone inconnue";
-      layer.bindPopup(`Vous êtes dans la zone : ${zoneId}`).openPopup(e.latlng);
+    const { libelle_pollution, score_pollution } = feature.properties;
+
+
+    layer.bindTooltip(
+      `Zone ${feature.id} – Pollution : ${libelle_pollution}`,
+      { sticky: true }
+    );
+
+    layer.on("click", () => {
+      layer.bindPopup(`
+        <div style="font-size:14px">
+          <strong>Zone ${feature.id}</strong><br/>
+          <b>Pollution :</b> ${libelle_pollution}<br/>
+          <b>Score :</b> ${score_pollution}
+        </div>
+      `).openPopup();
     });
   };
 
+  const honfleurBoundary =
+    honfleurContours.features[0].geometry.coordinates[0].map(
+      c => [c[1], c[0]]
+    );
+
   return (
-    <MapContainer center={center} zoom={15} style={{ height: "90vh" }}>
+    <MapContainer center={center} zoom={14} style={{ height: "90vh" }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="© OpenStreetMap"
       />
 
+      {/* Contour ville */}
       <Polygon
         positions={honfleurBoundary}
         pathOptions={{ color: "black", weight: 3, fillOpacity: 0 }}
       />
 
+      {/* Zones pollution */}
       {zonesGeoJSON && (
         <GeoJSON
           data={zonesGeoJSON}
           style={zoneStyle}
-          onEachFeature={onEachZone} // <-- détection du clic et popup
+          onEachFeature={onEachZone}
         />
       )}
     </MapContainer>
