@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +15,13 @@ public class ScorePollutionService {
 
     @Autowired
     private ZoneVilleRepository zoneVilleRepository;
+    @Autowired
     private CapteurPollutionRepository capteurPollutionRepository;
+    @Autowired
     private CapteurMeteoRepository capteurMeteoRepository;
+    @Autowired
     private MesurePollutionRepository mesurePollutionRepository;
+    @Autowired
     private MesureMeteoRepository mesureMeteoRepository;
 
     public List<ScorePollutionZone> calculeZonePollution(){
@@ -58,9 +61,9 @@ public class ScorePollutionService {
                 spz.setIndiceNo2Ajuste(no2Aj);
                 spz.setIndicePm10Ajuste(pm10Aj);
                 spz.setIndicePm25Ajuste(pm25Aj);
-                spz.setIndiceNo2Ajuste(sousIndiceNo2);
-                spz.setIndicePm10Ajuste(sousIndicepm10Aj);
-                spz.setIndicePm25Ajuste(sousIndicepm25Aj);
+                spz.setSousIndiceNo2(sousIndiceNo2);
+                spz.setSousIndicePm10(sousIndicepm10Aj);
+                spz.setSousIndicePm25(sousIndicepm25Aj);
                 spz.setScoreGlobalPollution(score_global);
                 spz.setDateMesure(LocalDateTime.now());
 
@@ -68,7 +71,7 @@ public class ScorePollutionService {
 
 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Erreur pour la zone " + zoneId + ": " + e.getMessage());
             }
 
         }
