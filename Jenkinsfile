@@ -9,6 +9,10 @@ pipeline {
         VM_INT_PASS = credentials('ssh-password-int-id') // SSH password
     }
 
+    triggers {
+            pollSCM('* * * * *') // vérifie s'il y a un push toute les une minute et build si c'est oui
+    }
+
     stages {
         stage('Checkout') {
             steps {
