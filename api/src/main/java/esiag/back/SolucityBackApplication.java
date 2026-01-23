@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class EsiagBackApplication {
+public class SolucityBackApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EsiagBackApplication.class, args);
+		SpringApplication.run(SolucityBackApplication.class, args);
 	}
 }
