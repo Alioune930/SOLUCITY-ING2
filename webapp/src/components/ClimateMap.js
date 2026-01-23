@@ -1,11 +1,48 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, GeoJSON, Polygon } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, Polygon, useMap } from "react-leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import honfleurContours from "../data/Honfleur-contours.json";
 
+const Legend = () => {
+  const map = useMap();
+
+  useEffect(() => {
+    const legend = L.control({ position: "bottomright" });
+
+    legend.onAdd = () => {
+      const div = L.DomUtil.create("div");
+
+      div.style.background = "white";
+      div.style.padding = "8px";
+      div.style.borderRadius = "6px";
+      div.style.boxShadow = "0 0 6px rgba(0,0,0,0.3)";
+      div.style.fontSize = "12px";
+      div.style.lineHeight = "18px";
+
+      div.innerHTML = `
+        <strong>Qualité de l’air</strong><br/>
+        <i style="background:#006400;width:12px;height:12px;display:inline-block"></i> 0–20 Très bon<br/>
+        <i style="background:#008000;width:12px;height:12px;display:inline-block"></i> 21–40 Bon<br/>
+        <i style="background:#FFFF00;width:12px;height:12px;display:inline-block"></i> 41–60 Moyen<br/>
+        <i style="background:#FFA500;width:12px;height:12px;display:inline-block"></i> 61–75 Dégradé<br/>
+        <i style="background:#FF0000;width:12px;height:12px;display:inline-block"></i> 76–90 Mauvais<br/>
+        <i style="background:#800080;width:12px;height:12px;display:inline-block"></i> 91–100 Très mauvais<br/>
+        <i style="background:#654321;width:12px;height:12px;display:inline-block"></i> >100 Extrême
+      `;
+
+      return div;
+    };
+
+    legend.addTo(map);
+    return () => legend.remove();
+  }, [map]);
+
+  return null;
+};
+
 const ClimateMap = () => {
   const [zonesGeoJSON, setZonesGeoJSON] = useState(null);
-
   const center = [49.4194, 0.2329];
 
   useEffect(() => {
@@ -24,7 +61,6 @@ const ClimateMap = () => {
 
   const onEachZone = (feature, layer) => {
     const { libelle_pollution, score_pollution } = feature.properties;
-
 
     layer.bindTooltip(
       `Zone ${feature.id} – Pollution : ${libelle_pollution}`,
@@ -54,13 +90,11 @@ const ClimateMap = () => {
         attribution="© OpenStreetMap"
       />
 
-      {/* Contour ville */}
       <Polygon
         positions={honfleurBoundary}
         pathOptions={{ color: "black", weight: 3, fillOpacity: 0 }}
       />
 
-      {/* Zones pollution */}
       {zonesGeoJSON && (
         <GeoJSON
           data={zonesGeoJSON}
@@ -68,6 +102,9 @@ const ClimateMap = () => {
           onEachFeature={onEachZone}
         />
       )}
+
+      {/* Légende */}
+      <Legend />
     </MapContainer>
   );
 };
