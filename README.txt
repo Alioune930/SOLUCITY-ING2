@@ -55,17 +55,17 @@ US1.6 – Afficher les légendes et tooltips dynamiques --  (Done)
 US1.7 – Actualisation en temps réel - (Done)
 
 
-**** UC2 – Filtrer et personnaliser la carte
+**** Calcul des scores environnementaux à partir d’une adresse complète
 
-US2.1 – Activer / désactiver des couches
+US2.1 – (API) Backend qui retourne le score Global de pollution en fonction d'une adresse postale (En cours)
 
-US2.2 – Ajuster l’opacité des couches
+US2.2 – Générer les données Mock pour le capteur Pollen
 
-US2.3 – Superposer deux ou plusieurs couches
+US2.3 – Calcul des Scores par Zone
 
-US2.4 – Afficher une légende dynamique selon les couches actives
+US2.4 – (API) Backend pour renvoyer les données Pollen au Frontend
 
-US2.5 – Filtrer par zones ou quartiers
+US2.5 – Extension de l’API (US2.1) : renvoi des données pollen selon l’adresse postale complète
 
 
 **** UC3 – Personnaliser l’affichage pour utilisateurs sensibles
