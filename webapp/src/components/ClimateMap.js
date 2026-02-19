@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, GeoJSON, Polygon, useMap } from "react-leaflet
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import honfleurContours from "../data/Honfleur-contours.json";
+import { GET_ZONES } from "../constants/back";
 
 const Legend = () => {
   const map = useMap();
@@ -46,11 +47,16 @@ const ClimateMap = () => {
   const center = [49.4194, 0.2329];
 
   useEffect(() => {
-    fetch("http://172.31.249.83:8082/zones")
-      .then(res => res.json())
-      .then(data => setZonesGeoJSON(data))
-      .catch(err => console.error("Erreur chargement GeoJSON :", err));
-  }, []);
+  fetch(GET_ZONES)
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`Erreur HTTP ${res.status}`);
+      }
+      return res.json();
+    })
+    .then(data => setZonesGeoJSON(data))
+    .catch(err => console.error("Erreur chargement GeoJSON :", err));
+}, []);
 
   const zoneStyle = (feature) => ({
     color: feature.properties.couleur,
