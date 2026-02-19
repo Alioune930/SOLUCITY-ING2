@@ -15,7 +15,7 @@ export default function MapPage() {
         </select>
       </div>
 
-      {/* Titre au-dessus de la carte */}
+      {/* Titre */}
       <h1 style={{ textAlign: "center", margin: "10px 0", fontSize: "20px", fontWeight: "bold" }}>
         Honfleur – Real-Time Environmental Indicators
       </h1>
