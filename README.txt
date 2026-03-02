@@ -17,15 +17,15 @@ US 2 : Visualisation des polygones
 US 3 : Afficher le score global par quartier
 -> Terminé : calcule des scores de pollution
 US 4 : Afficher libellés et correspondance couleur pour chaque score
--> Terminé : ajout methode pour detreminé libellé et couleur en fonction du score
+-> Terminé : ajout methode pour determiné libellé et couleur en fonction du score
 US 5 : Visualisation des polygones avec score global de pollution, couleur et libellé
 -> Terminé : ajout des scores, libellé et couleur dans l'API pour les zones
 
 **R2**
-US 6 : Barre de recherche des addresse de honfleur
-US 7 : Affichage de l'addresse sur la carte
+US 6 : Afficher les scores global de pollen sur la carte
+US 7 : Affichage de l'adresse sur la carte
 US 8 : Afficher score global de pollution et pollen pour une adresse donnée
-US 9 : Améliorer mock données capteur stream continue (10 min une journéee)
+US 9 : Améliorer mock données capteur stream continue (10 min une journée)
 
 **R3**
 US 9 : Afficher le score de risque personnalisé par quartier
