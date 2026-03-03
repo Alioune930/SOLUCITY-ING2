@@ -104,6 +104,7 @@ def deploySSH(ip, user, pass, nexusUrl, profile, type, version, networkShared) {
             if [ "${type}" == "backend" ] || [ "${type}" == "all" ]; then
                 docker stop backend-${profile} || true
                 docker rm backend-${profile} || true
+
                 docker pull ${nexusUrl}/backend:${version}
 
                 if [ "${networkShared}" = "true" ]; then
@@ -116,6 +117,7 @@ def deploySSH(ip, user, pass, nexusUrl, profile, type, version, networkShared) {
             if [ "${type}" == "frontend" ] || [ "${type}" == "all" ]; then
                 docker stop frontend-${profile} || true
                 docker rm frontend-${profile} || true
+
                 docker pull ${nexusUrl}/frontend:${version}
 
                 if [ "${networkShared}" = "true" ]; then
