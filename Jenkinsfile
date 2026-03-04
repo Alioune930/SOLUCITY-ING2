@@ -36,7 +36,7 @@ pipeline {
         stage('Build & Push Docker') {
             steps {
                 script {
-                    def isTag = env.TAG_NAME != null
+                    def isProdTag = env.TAG_NAME?.startsWith("prod-")
                     def targetNexus = isTag ? NEXUS_URL_PROD : NEXUS_URL_INT
                     def imageTag = isTag ? env.TAG_NAME : "build-${BUILD_NUMBER}"
 
@@ -61,7 +61,7 @@ pipeline {
             when {
                 allOf {
                     branch 'main'
-                    not { buildingTag() }
+                    expression { !env.TAG_NAME }
                 }
             }
             steps {
@@ -73,7 +73,7 @@ pipeline {
 
         stage('Deploy to Production') {
             when {
-                buildingTag()
+                expression { env.TAG_NAME?.startsWith("prod-") }
             }
             steps {
                 script {
