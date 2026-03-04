@@ -37,8 +37,8 @@ pipeline {
             steps {
                 script {
                     def isProdTag = env.TAG_NAME?.startsWith("prod-")
-                    def targetNexus = isTag ? NEXUS_URL_PROD : NEXUS_URL_INT
-                    def imageTag = isTag ? env.TAG_NAME : "build-${BUILD_NUMBER}"
+                    def targetNexus = isProdTag ? NEXUS_URL_PROD : NEXUS_URL_INT
+                    def imageTag = isProdTag ? env.TAG_NAME : "build-${BUILD_NUMBER}"
 
                     echo "Building images for ${targetNexus} with tag ${imageTag}"
 
