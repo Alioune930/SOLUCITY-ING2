@@ -2,6 +2,8 @@ package esiag.back.models.Pollen.entity;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.*;
 
 @Entity
@@ -18,4 +20,7 @@ public class MesurePollen {
     private String saison;
     private String typePollen;
     private Double indiceFloraison;
+
+    @Column(name = "timestamp", nullable = false)
+    private LocalDateTime timestamp;
 }
