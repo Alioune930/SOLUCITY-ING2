@@ -123,7 +123,7 @@ def deploySSH(ip, user, pass, nexusUrl, profile, type, version, networkShared) {
                 if [ "${networkShared}" = "true" ]; then
                     docker run -d --name frontend-${profile} --network app-net -p 80:80 ${nexusUrl}/frontend:${version}
                 else
-                    docker run -d --name frontend-${profile} -p 80:80 ${nexusUrl}/frontend:${version}
+                    docker run -d --name frontend-${profile} --add-host=backend:${VM_PROD_BACK_IP} -p 80:80 ${nexusUrl}/frontend:${version}
                 fi
             fi
         '
