@@ -4,23 +4,7 @@ import "leaflet/dist/leaflet.css";
 import honfleurContours from "../../../data/Honfleur-contours.json";
 import {fetchPollen, fetchZones} from "../api/mapAPI";
 import MapLegend from "./MapLegend";
-
-function pointInPolygon(point, polygon) {
-    const x = point[0], y = point[1];
-    let inside = false;
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-        const xi = polygon[i][0], yi = polygon[i][1];
-        const xj = polygon[j][0], yj = polygon[j][1];
-
-        const intersect = ((yi > y) !== (yj > y)) &&
-            (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-        if (intersect) {
-            inside = !inside;
-        }
-    }
-    return inside;
-}
-
+import {getPollenForZone, pointInPolygon} from "../utils/mapUtils";
 
 export default function ClimateMap() {
     const [zones, setZones] = useState(null);
@@ -55,11 +39,8 @@ export default function ClimateMap() {
         if (!pollens) {
             return;
         }
-
         const points = [];
-
         pollens.features.forEach(function(feature) {
-
             //const polygon = feature.geometry.coordinates[0][0];
             const concentration = feature.properties.concentration;
             const color = feature.properties.codeCouleur;
@@ -96,14 +77,12 @@ export default function ClimateMap() {
                             generated++;
                         }
                     }
-
                 });
             });
         });
-
         setPollenPoints(points);
-
     }, [pollens]);
+
 
     const zoneStyle = function(feature) {
         return {
@@ -115,9 +94,11 @@ export default function ClimateMap() {
     };
 
     const onEachZone = function(feature, layer) {
-        const { libelle_pollution, score_pollution } = feature.properties;
+        const {libelle_pollution, score_pollution} = feature.properties;
 
-        layer.bindTooltip(`Zone ${feature.id} – Pollution : ${libelle_pollution}`, {
+        const pollen = getPollenForZone(feature.id, pollens);
+
+        layer.bindTooltip(`Zone ${feature.id} <br/> Pollution : ${libelle_pollution} <br/> Pollen : ${pollen.libelle}`, {
             sticky: true,
         });
 
@@ -126,7 +107,9 @@ export default function ClimateMap() {
                 '<div style="font-size:14px">' +
                 "<strong>Zone " + feature.id + "</strong><br/>" +
                 "<b>Pollution :</b> " + libelle_pollution + "<br/>" +
-                "<b>Score :</b> " + score_pollution +
+                "<b>Score Pollution :</b> " + score_pollution + "<br/>" +
+                "<b>Pollen :</b> " + pollen.libelle + "<br/>" +
+                "<b>Concentration Pollen :</b> " + pollen.concentration +
                 "</div>"
             ).openPopup();
         });
