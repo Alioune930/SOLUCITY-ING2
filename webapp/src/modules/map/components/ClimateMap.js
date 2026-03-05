@@ -101,7 +101,7 @@ export default function ClimateMap() {
             color: feature.properties.couleur,
             weight: 2,
             fillColor: feature.properties.couleur,
-            fillOpacity: 0.5
+            fillOpacity: 0.3
         };
     };
 
@@ -153,7 +153,7 @@ export default function ClimateMap() {
                         pathOptions={{
                             color: point.color,
                             fillColor: point.color,
-                            fillOpacity: 0.8
+                            fillOpacity: 1
                         }}
                     />
                 );
