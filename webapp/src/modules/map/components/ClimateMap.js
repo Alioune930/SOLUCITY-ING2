@@ -14,7 +14,9 @@ function pointInPolygon(point, polygon) {
 
         const intersect = ((yi > y) !== (yj > y)) &&
             (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-        if (intersect) inside = !inside;
+        if (intersect) {
+            inside = !inside;
+        }
     }
     return inside;
 }
@@ -50,46 +52,53 @@ export default function ClimateMap() {
 
 
     useEffect(function() {
-        if (!pollens) return;
+        if (!pollens) {
+            return;
+        }
 
         const points = [];
 
         pollens.features.forEach(function(feature) {
 
-            const polygon = feature.geometry.coordinates[0][0];
+            //const polygon = feature.geometry.coordinates[0][0];
             const concentration = feature.properties.concentration;
             const color = feature.properties.codeCouleur;
             const libelle = feature.properties.libelle;
 
             const numberOfPoints = Math.floor(concentration / 5);
 
-            const longs = polygon.map(function (p) {
-                return p[0];
-            });
-            const lats = polygon.map(function (p) {
-                return p[1];
-            });
-            const minLong = Math.min.apply(null, longs);
-            const maxLong = Math.max.apply(null, longs);
-            const minLat = Math.min.apply(null, lats);
-            const maxLat = Math.max.apply(null, lats);
+            feature.geometry.coordinates.forEach(function (polygonGroup) {
+                polygonGroup.forEach(function (polygon) {
 
-            let generated = 0;
-            while (generated < numberOfPoints) {
-                const long = minLong + Math.random() * (maxLong - minLong);
-                const lat = minLat + Math.random() * (maxLat - minLat);
-
-                if (pointInPolygon([long, lat], polygon)) {
-                    points.push({
-                        position: [lat, long],
-                        color: color,
-                        libelle: libelle,
-                        concentration: concentration
+                    const longs = polygon.map(function (p) {
+                        return p[0];
                     });
-                    generated++;
-                }
-            }
+                    const lats = polygon.map(function (p) {
+                        return p[1];
+                    });
+                    const minLong = Math.min.apply(null, longs);
+                    const maxLong = Math.max.apply(null, longs);
+                    const minLat = Math.min.apply(null, lats);
+                    const maxLat = Math.max.apply(null, lats);
 
+                    let generated = 0;
+                    while (generated < numberOfPoints) {
+                        const long = minLong + Math.random() * (maxLong - minLong);
+                        const lat = minLat + Math.random() * (maxLat - minLat);
+
+                        if (pointInPolygon([long, lat], polygon)) {
+                            points.push({
+                                position: [lat, long],
+                                color: color,
+                                libelle: libelle,
+                                concentration: concentration
+                            });
+                            generated++;
+                        }
+                    }
+
+                });
+            });
         });
 
         setPollenPoints(points);
