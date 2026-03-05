@@ -12,11 +12,18 @@ const LEGEND_ITEMS = [
     { color: "#654321", label: ">100 Extrême" },
 ];
 
+const POLLEN_ITEMS = [
+    { color: "#66BB6A", label: "Faible (≤20)" },
+    { color: "#FFFF00", label: "Modéré (≤50)" },
+    { color: "#FFA500", label: "Élevé (≤75)" },
+    { color: "#FF0000", label: "Très élevé (>75)" },
+];
+
 export default function MapLegend() {
     const map = useMap();
 
     useEffect(function() {
-        const legend = L.control({ position: "bottomright" });
+        const legend = L.control({ position: "topright" });
 
         legend.onAdd = function() {
             const div = L.DomUtil.create("div");
@@ -27,13 +34,20 @@ export default function MapLegend() {
             div.style.fontSize = "12px";
             div.style.lineHeight = "20px";
 
-            const rows = LEGEND_ITEMS.map(function(item) {
+            const pollutionRows = LEGEND_ITEMS.map(function(item) {
                 return '<div><i style="background:' + item.color +
                     ';width:12px;height:12px;display:inline-block;margin-right:5px"></i>' +
                     item.label + '</div>';
             }).join("");
 
-            div.innerHTML = "<strong>Qualité de l'air</strong><br/>" + rows;
+            const pollenRows = POLLEN_ITEMS.map(function(item) {
+                return '<div><i style="background:' + item.color +
+                    ';width:12px;height:12px;display:inline-block;margin-right:5px"></i>' +
+                    item.label + '</div>';
+            }).join("");
+
+            div.innerHTML = "<strong>Qualité de l'air</strong><br/>" + pollutionRows +
+                "<br/><strong>Pollen</strong><br/>" + pollenRows;
             return div;
         };
 
