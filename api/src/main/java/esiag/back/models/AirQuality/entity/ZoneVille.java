@@ -18,6 +18,9 @@ public class ZoneVille {
     @Column(name = "id_capteur")
     private String idCapteur;
 
+    @Column(name = "id_capteur_pollen")
+    private String idCapteurPollen;
+
     @Column(nullable = false)
     private String ville;
 
