@@ -151,7 +151,9 @@ export default function ClimateMap() {
                         center={point.position}
                         radius={3}
                         pathOptions={{
-                            color: point.color,
+                            color: "#000000",
+                            weight: 1,
+                            //color: point.color,
                             fillColor: point.color,
                             fillOpacity: 1
                         }}
