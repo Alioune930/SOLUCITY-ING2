@@ -13,10 +13,10 @@ import esiag.back.models.Pollen.dto.CapteurPollenLight;
 import esiag.back.models.AirQuality.dto.CapteurMeteoLight;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ScorePollenService {
@@ -34,63 +34,64 @@ public class ScorePollenService {
 
     public List<ConcentrationPollenZone> calculeConcentrationZones() {
 
-        List<ConcentrationPollenZone> resultatsListe = new ArrayList<ConcentrationPollenZone>();
+        List<ConcentrationPollenZone> resultats = new ArrayList<ConcentrationPollenZone>();
         
-        List<Long> idsZones = zoneVilleRepository.findAllZonesId();
-
-        for (int i = 0; i < idsZones.size(); i++) {
-            Long idZ = idsZones.get(i);
-
-            try {
-                CapteurPollenLight cp = capteurPollenRepository.findCapteurPollenInZone(idZ).get(0);
-
-                CapteurMeteoLight cm = capteurMeteoRepository.findNearestMeteoToZone(idZ).get(0);
-                DonneeMeteo dm = mesureMeteoRepository.findByIdCapteurMeteo(cm.getIdCapteurMeteo()).get(0);
-
-                List<DonneePollenLight> listeMesures = mesurePollenRepository.findByCapteur(cp.getIdCapteur());
-
-                double total = 0.0;
-                
-                for (DonneePollenLight m : listeMesures) {
-                    double calcul = PollenCalculator.calculConcentration(
-                            m.getIndiceFloraison(),
-                            m.getTypePollen(),
-                            m.getSaison(),
-                            dm.getTemperature(),  
-                            dm.getHumidite(),      
-                            dm.getVitesseVent()   
-                    );
-                    total = total + calcul;
-                }
-
-                double moyenneZone = 0;
-                if (listeMesures.size() > 0) {
-                    moyenneZone = total / listeMesures.size();
-                }
-
-               ConcentrationPollenZone res = new ConcentrationPollenZone();
-                res.setIdCapteur(cp.getIdCapteur());
-                res.setVille(cp.getVille());
-                res.setGeom(cp.getGeom());
-                res.setConcentration(moyenneZone);
-
-                if (!listeMesures.isEmpty()) {
-                    int dernierIndex = listeMesures.size() - 1;
-                    LocalDateTime dateDerniereMesure = listeMesures.get(dernierIndex).getTimestamp();
-                    
-                    res.setTimestamp(dateDerniereMesure);
-                } else {
-                    res.setTimestamp(LocalDateTime.now());
-                };
-                
-                System.out.println(" Calcul fini pour " + cp.getVille() + " (" + moyenneZone + ")");
-                resultatsListe.add(res);
-
-            } catch (Exception e) {
-                System.out.println("Erreur zone " + idZ + " : " + e.getMessage());
-            }
+        List<Object[]> zonesData = zoneVilleRepository.findAllZonesGeoJson();
+        Map<Long, String> mapGeom = new HashMap<>();
+        for (Object[] obj : zonesData) {
+            mapGeom.put(((Number) obj[0]).longValue(), (String) obj[2]);
         }
 
-        return resultatsListe;
+        List<Long> listeIds = zoneVilleRepository.findAllZonesId();
+
+        for (int i = 0; i < listeIds.size(); i++) {
+            Long idZone = listeIds.get(i);
+
+            try {
+                List<CapteurPollenLight> capteurs = capteurPollenRepository.findCapteurPollenInZone(idZone);
+                if (capteurs.size() > 0) {
+                    CapteurPollenLight leCapteur = capteurs.get(0);
+
+                    double t = 20.0, h = 50.0, v = 10.0;
+
+                    List<CapteurMeteoLight> listeMeteo = capteurMeteoRepository.findNearestMeteoToZone(idZone);
+                    if (listeMeteo.size() > 0) {
+                        List<DonneeMeteo> mesuresMeteo = mesureMeteoRepository.findByIdCapteurMeteo(listeMeteo.get(0).getIdCapteurMeteo());
+                        if (mesuresMeteo.size() > 0) {
+                            DonneeMeteo dm = mesuresMeteo.get(mesuresMeteo.size() - 1);
+                            t = dm.getTemperature();
+                            h = dm.getHumidite();
+                            v = dm.getVitesseVent();
+                        }
+                    }
+
+DonneePollenLight derniereMesure = mesurePollenRepository.findLatestByCapteur(leCapteur.getIdCapteur());
+
+                    if (derniereMesure != null) {
+                        double score = PollenCalculator.calculConcentration(
+                            derniereMesure.getIndiceFloraison(),
+                            derniereMesure.getTypePollen(),
+                            derniereMesure.getSaison(),
+                            t, h, v
+                        );
+
+                        ConcentrationPollenZone cpz = new ConcentrationPollenZone();
+                        cpz.setIdZone(idZone);
+                        cpz.setGeom(mapGeom.get(idZone));
+                        cpz.setIdCapteur(leCapteur.getIdCapteur());
+                        cpz.setVille(leCapteur.getVille());
+                        cpz.setConcentration(score);
+                        cpz.setTimestamp(derniereMesure.getTimestamp());
+                        cpz.setSaison(derniereMesure.getSaison()); 
+                        cpz.setTemperature(t);
+                        resultats.add(cpz);
+                        System.out.println("Zone calculee : " + leCapteur.getVille());
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Erreur zone : " + idZone);
+            }
+        }
+        return resultats;
     }
 }
