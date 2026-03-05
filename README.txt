@@ -22,10 +22,13 @@ US 5 : Visualisation des polygones avec score global de pollution, couleur et li
 -> Terminé : ajout des scores, libellé et couleur dans l'API pour les zones
 
 **R2**
+Restructuration du Frontend
+-> Terminé : creation du dossier modules/home modules/map adaptation des fichiers js créer par Moumouni
 US 6 : Afficher les scores global de pollen sur la carte
-US 7 : Affichage de l'adresse sur la carte
-US 8 : Afficher score global de pollution et pollen pour une adresse donnée
-US 9 : Améliorer mock données capteur stream continue (10 min une journée)
+US 7 : Améliorer mock données capteur stream continue (10 min une journée)
+US 8 : Affichage de different quartier
+US 9 : Afficher score global de pollution et pollen pour un quartier
+
 
 **R3**
 US 9 : Afficher le score de risque personnalisé par quartier
