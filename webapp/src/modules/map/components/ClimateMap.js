@@ -1,40 +1,120 @@
-import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, GeoJSON, Polygon } from "react-leaflet";
+import React, {useEffect, useRef, useState} from "react";
+import {MapContainer, TileLayer, GeoJSON, Polygon, CircleMarker} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import honfleurContours from "../../../data/Honfleur-contours.json";
-import { fetchZones } from "../api/mapAPI";
+import {fetchPollen, fetchZones} from "../api/mapAPI";
 import MapLegend from "./MapLegend";
+import {getPollenForZone, pointInPolygon} from "../utils/mapUtils";
 
-export default function ClimateMap() {
+export default function ClimateMap({ displayFilter }) {
     const [zones, setZones] = useState(null);
+    const [pollens, setPollens] = useState(null);
+    const [pollenPoints, setPollenPoints] = useState([]);
+    const staticPollenPoints = useRef([]);
     const center = [49.4194, 0.2329];
 
-    useEffect(function() {
-        console.log("Début du fetch Zones");
 
+    function refreshData() {
+        console.log("Début du fetch Zones");
         fetchZones()
-            .then(function(data) {
+            .then(function (data) {
                 console.log("Zones reçues :", data);
                 setZones(data);
             })
-            .catch(function(err) {
+            .catch(function (err) {
                 console.error("Erreur chargement zones :", err);
             });
+
+        fetchPollen()
+            .then(function (data) {
+                setPollens(data);
+                staticPollenPoints.current = [];
+            })
+            .catch(function (err) {
+                console.error("Erreur chargement pollen :", err);
+            });
+    }
+
+    useEffect(function () {
+        refreshData();
+
+        const idTimer = setInterval(refreshData, 4000);
+
+        return function () {
+            clearInterval(idTimer);
+        };
+
     }, []);
 
+
+
+
+    useEffect(function() {
+        if (!pollens) {
+            return;
+        }
+        if (staticPollenPoints.current.length > 0) return;
+        const points = [];
+        pollens.features.forEach(function(feature) {
+            //const polygon = feature.geometry.coordinates[0][0];
+            const concentration = feature.properties.concentration;
+            const color = feature.properties.codeCouleur;
+            const libelle = feature.properties.libelle;
+
+            const numberOfPoints = Math.floor(concentration / 5);
+
+            feature.geometry.coordinates.forEach(function (polygonGroup) {
+                polygonGroup.forEach(function (polygon) {
+
+                    const longs = polygon.map(function (p) {
+                        return p[0];
+                    });
+                    const lats = polygon.map(function (p) {
+                        return p[1];
+                    });
+                    const minLong = Math.min.apply(null, longs);
+                    const maxLong = Math.max.apply(null, longs);
+                    const minLat = Math.min.apply(null, lats);
+                    const maxLat = Math.max.apply(null, lats);
+
+                    let generated = 0;
+                    while (generated < numberOfPoints) {
+                        const long = minLong + Math.random() * (maxLong - minLong);
+                        const lat = minLat + Math.random() * (maxLat - minLat);
+
+                        if (pointInPolygon([long, lat], polygon)) {
+                            points.push({
+                                position: [lat, long],
+                                color: color,
+                                libelle: libelle,
+                                concentration: concentration
+                            });
+                            generated++;
+                        }
+                    }
+                });
+            });
+        });
+        staticPollenPoints.current = points;
+        setPollenPoints(points);
+    }, [pollens]);
+
+
     const zoneStyle = function(feature) {
+        const filterPollen = displayFilter === "pollen";
         return {
             color: feature.properties.couleur,
             weight: 2,
             fillColor: feature.properties.couleur,
-            fillOpacity: 0.5
+            fillOpacity: filterPollen ? 0 : 0.3
         };
     };
 
     const onEachZone = function(feature, layer) {
-        const { libelle_pollution, score_pollution } = feature.properties;
+        const {libelle_pollution, score_pollution} = feature.properties;
+        const pollen = getPollenForZone(feature.id, pollens)
 
-        layer.bindTooltip(`Zone ${feature.id} – Pollution : ${libelle_pollution}`, {
+        layer.bindTooltip(`Zone ${feature.id} <br/> Pollution : ${libelle_pollution} <br/> Pollen : ${pollen.libelle}`, {
             sticky: true,
         });
 
@@ -43,7 +123,9 @@ export default function ClimateMap() {
                 '<div style="font-size:14px">' +
                 "<strong>Zone " + feature.id + "</strong><br/>" +
                 "<b>Pollution :</b> " + libelle_pollution + "<br/>" +
-                "<b>Score :</b> " + score_pollution +
+                "<b>Score Pollution :</b> " + score_pollution + "<br/>" +
+                "<b>Pollen :</b> " + pollen.libelle + "<br/>" +
+                "<b>Concentration Pollen :</b> " + pollen.concentration +
                 "</div>"
             ).openPopup();
         });
@@ -64,8 +146,30 @@ export default function ClimateMap() {
                 pathOptions={{ color: "black", weight: 3, fillOpacity: 0 }}
             />
             {zones && (
-                <GeoJSON data={zones} style={zoneStyle} onEachFeature={onEachZone} />
+                <GeoJSON
+                    key={displayFilter + JSON.stringify(zones)} //vient de là https://stackoverflow.com/questions/76369520/react-leaflet-map-not-updating-data-rerending-when-data-changes
+                    data={zones}
+                    style={zoneStyle}
+                    onEachFeature={onEachZone} />
             )}
+
+            {(displayFilter === "all" || displayFilter === "pollen") && pollenPoints.map(function(point, index) {
+                return (
+                    <CircleMarker
+                        key={index}
+                        center={point.position}
+                        radius={3}
+                        pathOptions={{
+                            color: "#000000",
+                            weight: 1,
+                            //color: point.color,
+                            fillColor: point.color,
+                            fillOpacity: 1
+                        }}
+                    />
+                );
+            })}
+
             <MapLegend />
         </MapContainer>
     );

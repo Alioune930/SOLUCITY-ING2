@@ -1,0 +1,41 @@
+export function getPollenForZone(zoneId, pollens) {
+
+    if (!pollens) {
+        return {
+            libelle: "No pollen data",
+            concentration: "-"
+        };
+    }
+
+    const pollenZone = pollens.features.find(function(feature) {
+        return feature.properties.idZone === zoneId;
+    });
+
+    if (!pollenZone) {
+        return {
+            libelle: "No pollen data",
+            concentration: "-"
+        };
+    }
+
+    return {
+        libelle: pollenZone.properties.libelle,
+        concentration: pollenZone.properties.concentration
+    };
+}
+
+export function pointInPolygon(point, polygon) {
+    const x = point[0], y = point[1];
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i][0], yi = polygon[i][1];
+        const xj = polygon[j][0], yj = polygon[j][1];
+
+        const intersect = ((yi > y) !== (yj > y)) &&
+            (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) {
+            inside = !inside;
+        }
+    }
+    return inside;
+}

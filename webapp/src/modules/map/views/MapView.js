@@ -7,11 +7,22 @@ const MAP_MODES = [
     { value: "RoadMap", label: "Réseau routier" },
 ];
 
+const CLIMATE_FILTERS = [
+    { value: "all", label: "all" },
+    { value: "pollution", label: "Pollution" },
+    { value: "pollen", label: "Pollen" },
+];
+
 export default function MapView() {
     const [mode, setMode] = useState("ClimateMap");
+    const [filter, setFilter] = useState("all");
 
     function handleChange(e) {
         setMode(e.target.value);
+    }
+
+    function handleChangeFilter(e) {
+        setFilter(e.target.value);
     }
 
     function renderOption(item) {
@@ -28,6 +39,11 @@ export default function MapView() {
                 <select value={mode} onChange={handleChange}>
                     {MAP_MODES.map(renderOption)}
                 </select>
+                {mode === "ClimateMap" && (
+                    <select value={filter} onChange={handleChangeFilter}>
+                        {CLIMATE_FILTERS.map(renderOption)}
+                    </select>
+                )}
             </div>
 
             <h1 style={{ textAlign: "center", margin: "10px 0", fontSize: "20px", fontWeight: "bold" }}>
@@ -35,7 +51,7 @@ export default function MapView() {
             </h1>
 
             <div style={{ flexGrow: 1 }}>
-                {mode === "ClimateMap" && <ClimateMap />}
+                {mode === "ClimateMap" && <ClimateMap displayFilter={filter} />}
                 {mode === "RoadMap" && <RoadMap />}
             </div>
         </div>
