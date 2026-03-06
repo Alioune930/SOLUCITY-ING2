@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {MapContainer, TileLayer, GeoJSON, Polygon, CircleMarker} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import honfleurContours from "../../../data/Honfleur-contours.json";
@@ -10,6 +10,7 @@ export default function ClimateMap({ displayFilter }) {
     const [zones, setZones] = useState(null);
     const [pollens, setPollens] = useState(null);
     const [pollenPoints, setPollenPoints] = useState([]);
+    const staticPollenPoints = useRef([]);
     const center = [49.4194, 0.2329];
 
 
@@ -27,6 +28,7 @@ export default function ClimateMap({ displayFilter }) {
         fetchPollen()
             .then(function (data) {
                 setPollens(data);
+                staticPollenPoints.current = [];
             })
             .catch(function (err) {
                 console.error("Erreur chargement pollen :", err);
@@ -51,6 +53,7 @@ export default function ClimateMap({ displayFilter }) {
         if (!pollens) {
             return;
         }
+        if (staticPollenPoints.current.length > 0) return;
         const points = [];
         pollens.features.forEach(function(feature) {
             //const polygon = feature.geometry.coordinates[0][0];
@@ -92,6 +95,7 @@ export default function ClimateMap({ displayFilter }) {
                 });
             });
         });
+        staticPollenPoints.current = points;
         setPollenPoints(points);
     }, [pollens]);
 
