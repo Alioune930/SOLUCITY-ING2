@@ -12,27 +12,39 @@ export default function ClimateMap() {
     const [pollenPoints, setPollenPoints] = useState([]);
     const center = [49.4194, 0.2329];
 
-    useEffect(function() {
+
+    function refreshData() {
         console.log("Début du fetch Zones");
-            fetchZones()
-                .then(function (data) {
-                    console.log("Zones reçues :", data);
-                    setZones(data);
-                })
-                .catch(function (err) {
-                    console.error("Erreur chargement zones :", err);
-                });
+        fetchZones()
+            .then(function (data) {
+                console.log("Zones reçues :", data);
+                setZones(data);
+            })
+            .catch(function (err) {
+                console.error("Erreur chargement zones :", err);
+            });
 
-            fetchPollen()
-                .then(function (data) {
-                    setPollens(data);
-                })
-                .catch(function (err) {
-                    console.error("Erreur chargement pollen :", err);
-                });
+        fetchPollen()
+            .then(function (data) {
+                setPollens(data);
+            })
+            .catch(function (err) {
+                console.error("Erreur chargement pollen :", err);
+            });
+    }
 
+    useEffect(function () {
+        refreshData();
+
+        const idTimer = setInterval(refreshData, 4000);
+
+        return function () {
+            clearInterval(idTimer);
+        };
 
     }, []);
+
+
 
 
     useEffect(function() {
@@ -130,6 +142,7 @@ export default function ClimateMap() {
             />
             {zones && (
                 <GeoJSON
+                    key={JSON.stringify(zones)} //vient de là https://stackoverflow.com/questions/76369520/react-leaflet-map-not-updating-data-rerending-when-data-changes
                     data={zones}
                     style={zoneStyle}
                     onEachFeature={onEachZone} />
