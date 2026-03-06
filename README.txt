@@ -63,15 +63,13 @@ US1.7 – Actualisation en temps réel - (Done)
 
 **** Calcul des scores environnementaux à partir d’une adresse complète
 
-US2.1 – (API) Backend qui retourne le score Global de pollution en fonction d'une adresse postale (En cours)
+US2.1 – (API) Backend qui retourne le score Global de pollution en fonction d'une adresse postale (abandon)
 
-US2.2 – Générer les données Mock pour le capteur Pollen
+US2.4Suite – Calcul des Scores par Zone (Done)
 
-US2.3 – Calcul des Scores par Zone
+US2.4 – (API) Backend pour renvoyer les données Pollen au Frontend (Done)
 
-US2.4 – (API) Backend pour renvoyer les données Pollen au Frontend
-
-US2.5 – Extension de l’API (US2.1) : renvoi des données pollen selon l’adresse postale complète
+US2.5 – Extension de l’API (US2.1) : renvoi des données pollen selon l’adresse postale complète (abandon)
 
 
 **** UC3 – Personnaliser l’affichage pour utilisateurs sensibles
