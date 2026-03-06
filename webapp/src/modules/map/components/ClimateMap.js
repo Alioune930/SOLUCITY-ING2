@@ -14,23 +14,23 @@ export default function ClimateMap() {
 
     useEffect(function() {
         console.log("Début du fetch Zones");
+            fetchZones()
+                .then(function (data) {
+                    console.log("Zones reçues :", data);
+                    setZones(data);
+                })
+                .catch(function (err) {
+                    console.error("Erreur chargement zones :", err);
+                });
 
-        fetchZones()
-            .then(function(data) {
-                console.log("Zones reçues :", data);
-                setZones(data);
-            })
-            .catch(function(err) {
-                console.error("Erreur chargement zones :", err);
-            });
+            fetchPollen()
+                .then(function (data) {
+                    setPollens(data);
+                })
+                .catch(function (err) {
+                    console.error("Erreur chargement pollen :", err);
+                });
 
-        fetchPollen()
-            .then(function(data) {
-                setPollens(data);
-            })
-            .catch(function(err) {
-                console.error("Erreur chargement pollen :", err);
-            });
 
     }, []);
 
@@ -95,8 +95,7 @@ export default function ClimateMap() {
 
     const onEachZone = function(feature, layer) {
         const {libelle_pollution, score_pollution} = feature.properties;
-
-        const pollen = getPollenForZone(feature.id, pollens);
+        const pollen = getPollenForZone(feature.id, pollens)
 
         layer.bindTooltip(`Zone ${feature.id} <br/> Pollution : ${libelle_pollution} <br/> Pollen : ${pollen.libelle}`, {
             sticky: true,
