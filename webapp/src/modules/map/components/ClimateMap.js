@@ -6,7 +6,7 @@ import {fetchPollen, fetchZones} from "../api/mapAPI";
 import MapLegend from "./MapLegend";
 import {getPollenForZone, pointInPolygon} from "../utils/mapUtils";
 
-export default function ClimateMap() {
+export default function ClimateMap({ displayFilter }) {
     const [zones, setZones] = useState(null);
     const [pollens, setPollens] = useState(null);
     const [pollenPoints, setPollenPoints] = useState([]);
@@ -140,7 +140,7 @@ export default function ClimateMap() {
                 positions={boundary}
                 pathOptions={{ color: "black", weight: 3, fillOpacity: 0 }}
             />
-            {zones && (
+            {zones && (displayFilter === "all" || displayFilter === "pollution") && (
                 <GeoJSON
                     key={JSON.stringify(zones)} //vient de là https://stackoverflow.com/questions/76369520/react-leaflet-map-not-updating-data-rerending-when-data-changes
                     data={zones}
@@ -148,7 +148,7 @@ export default function ClimateMap() {
                     onEachFeature={onEachZone} />
             )}
 
-            {pollenPoints.map(function(point, index) {
+            {(displayFilter === "all" || displayFilter === "pollen") && pollenPoints.map(function(point, index) {
                 return (
                     <CircleMarker
                         key={index}
