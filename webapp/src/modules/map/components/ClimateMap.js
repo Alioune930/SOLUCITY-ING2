@@ -97,11 +97,12 @@ export default function ClimateMap({ displayFilter }) {
 
 
     const zoneStyle = function(feature) {
+        const filterPollen = displayFilter === "pollen";
         return {
             color: feature.properties.couleur,
             weight: 2,
             fillColor: feature.properties.couleur,
-            fillOpacity: 0.3
+            fillOpacity: filterPollen ? 0 : 0.3
         };
     };
 
@@ -140,9 +141,9 @@ export default function ClimateMap({ displayFilter }) {
                 positions={boundary}
                 pathOptions={{ color: "black", weight: 3, fillOpacity: 0 }}
             />
-            {zones && (displayFilter === "all" || displayFilter === "pollution") && (
+            {zones && (
                 <GeoJSON
-                    key={JSON.stringify(zones)} //vient de là https://stackoverflow.com/questions/76369520/react-leaflet-map-not-updating-data-rerending-when-data-changes
+                    key={displayFilter + JSON.stringify(zones)} //vient de là https://stackoverflow.com/questions/76369520/react-leaflet-map-not-updating-data-rerending-when-data-changes
                     data={zones}
                     style={zoneStyle}
                     onEachFeature={onEachZone} />
