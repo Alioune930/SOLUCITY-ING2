@@ -47,6 +47,7 @@ public class ZoneVilleService {
             properties.put("score_pollution", spz.getScoreGlobalPollution());
             properties.put("libelle_pollution", spz.getLibellePollution());
             properties.put("couleur", spz.getCouleurPollution());
+            properties.put("date", spz.getDateMesure() );
 
             feature.put("properties", properties);
 
