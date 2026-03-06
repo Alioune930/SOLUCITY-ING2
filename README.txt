@@ -25,7 +25,10 @@ US 5 : Visualisation des polygones avec score global de pollution, couleur et li
 Restructuration du Frontend
 -> Terminé : creation du dossier modules/home modules/map adaptation des fichiers js créer par Moumouni
 US 6 : Afficher les scores global de pollen sur la carte
-US 7 : Améliorer mock données capteur stream continue (10 min une journée)
+-> Terminé : Affichage de la concentration de pollen sur la carte, superposition données pollen et pollution,
+possibilité de filtrer par vue (pollen/pollution), rafraichissement automatique des données sur la carte
+US 7 : Améliorer mock données capteur stream continue (3 min une journée)
+-> s'adapte au mock du pollen car les données méteo change
 US 8 : Affichage de different quartier
 US 9 : Afficher score global de pollution et pollen pour un quartier
 
