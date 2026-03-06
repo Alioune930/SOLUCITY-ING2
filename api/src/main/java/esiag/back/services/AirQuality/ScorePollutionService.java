@@ -71,7 +71,7 @@ public class ScorePollutionService {
                 spz.setScoreGlobalPollution(score_global);
                 spz.setLibellePollution(libelle);
                 spz.setCouleurPollution(couleur);
-                spz.setDateMesure(LocalDateTime.now());
+                spz.setDateMesure(dp.getDateMesure());
 
                 scorePollutionZones.add(spz);
 

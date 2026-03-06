@@ -3,6 +3,7 @@ package esiag.back.models.AirQuality.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "mesure_pollution")
@@ -21,5 +22,8 @@ public class MesurePollution {
     private Float pm10;
 
     private Float pm25;
+
+    @Column(name = "date_mesure")
+    private LocalDateTime dateMesure;
 
 }
