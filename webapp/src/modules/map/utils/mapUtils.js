@@ -8,7 +8,7 @@ export function getPollenForZone(zoneId, pollens) {
     }
 
     const pollenZone = pollens.features.find(function(feature) {
-        return feature.properties.id_zone === feature.id;
+        return feature.properties.idZone === zoneId;
     });
 
     if (!pollenZone) {
