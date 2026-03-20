@@ -27,7 +27,7 @@ public class HealthProfileCalculator {
         if (profil.getSensibilite() != null) {
             switch (profil.getSensibilite().toLowerCase()) {
                 case "leger": facteur += 0.1f; break;
-                case "modere": facteur += 0.2f; break;
+                case "moyenne": facteur += 0.2f; break;
                 case "severe": facteur += 0.4f; break;
             }
         }
