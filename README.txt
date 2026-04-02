@@ -74,12 +74,8 @@ US2.5 – Extension de l’API (US2.1) : renvoi des données pollen selon l’ad
 
 **** UC3 – Personnaliser l’affichage pour utilisateurs sensibles
 
-US3.1 – Activer le mode utilisateur sensible
+US3.1 – Ajouter la page pour l'utilisateur sensible
 
 US3.2 – Visualiser les zones à risque selon le profil
 
 US3.3 – Afficher des conseils contextuels
-
-US3.4 – Afficher un itinéraire conseillé
-
-US3.5 – Mise à jour en temps réel selon les nouvelles données
