@@ -6,7 +6,7 @@ import lombok.Data;
 public class HealthProfil {
 
     private boolean asthme;
-    private String sensibilite;
+    private String sensibilitePollution;
     private String declencheur;
     private String sensibilitePollen;
 

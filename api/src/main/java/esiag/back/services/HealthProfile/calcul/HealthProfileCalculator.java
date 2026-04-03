@@ -20,12 +20,12 @@ public class HealthProfileCalculator {
 
         float facteur = 1.0f;
 
-        if (profil.isAsthme()) {
+        if (profil.isAsthme() && PollutionTrigger(profil)) {
             facteur += 0.2f;
         }
 
-        if (profil.getSensibilite() != null) {
-            switch (profil.getSensibilite().toLowerCase()) {
+        if (profil.getSensibilitePollution() != null) {
+            switch (profil.getSensibilitePollution().toLowerCase()) {
                 case "leger": facteur += 0.1f; break;
                 case "moyenne": facteur += 0.2f; break;
                 case "severe": facteur += 0.4f; break;
@@ -42,6 +42,10 @@ public class HealthProfileCalculator {
     public double HealthProfilScorePollen(double score, HealthProfil profil) {
 
         float facteur = 1.0f;
+
+        if (profil.isAsthme() && PollenTrigger(profil)) {
+            facteur += 0.2f;
+        }
 
         if (profil.getSensibilitePollen() != null) {
             switch (profil.getSensibilitePollen().toLowerCase()) {
