@@ -29,15 +29,14 @@ US 6 : Afficher les scores global de pollen sur la carte
 possibilité de filtrer par vue (pollen/pollution), rafraichissement automatique des données sur la carte
 US 7 : Améliorer mock données capteur stream continue (3 min une journée)
 -> s'adapte au mock du pollen car les données méteo change
-US 8 : Affichage de different quartier
-US 9 : Afficher score global de pollution et pollen pour un quartier
 
 
 **R3**
 US 9 : Afficher le score de risque personnalisé par quartier
+-> En cours : création de class de calcul pour adapter le score aux données santé de l'utilisateur.
 US 10 : Afficher libellés de score de risque et correspondance couleurs pour chaque score
 US 11 : Visualisation des polygones avec risque personnalisé
-US 12 : Afficher score de risque personnalisé pour une adresse donnée
+
 
 
 -------------------------------------------------------------------------------------------------------------
