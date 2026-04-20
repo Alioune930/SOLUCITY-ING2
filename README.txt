@@ -73,7 +73,7 @@ US2.5 – Extension de l’API (US2.1) : renvoi des données pollen selon l’ad
 
 **** UC3 – Personnaliser l’affichage pour utilisateurs sensibles
 
-US3.1 – Tests Unitaires
+US3.1 – Tests Unitaire et d'intégration
 
 US3.2 – Ajouter la page pour l'utilisateur sensible
 
