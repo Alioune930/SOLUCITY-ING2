@@ -26,9 +26,9 @@ public class HealthProfileCalculator {
 
         if (profil.getSensibilitePollution() != null) {
             switch (profil.getSensibilitePollution().toLowerCase()) {
-                case "leger": facteur += 0.1f; break;
-                case "moyenne": facteur += 0.2f; break;
-                case "severe": facteur += 0.4f; break;
+                case HealthProfileConstants.LEGER: facteur += 0.1f; break;
+                case HealthProfileConstants.MOYENNE: facteur += 0.2f; break;
+                case HealthProfileConstants.SEVERE: facteur += 0.4f; break;
             }
         }
 
@@ -49,9 +49,9 @@ public class HealthProfileCalculator {
 
         if (profil.getSensibilitePollen() != null) {
             switch (profil.getSensibilitePollen().toLowerCase()) {
-                case "faible": facteur += 0.1f; break;
-                case "moderee": facteur += 0.3f; break;
-                case "forte": facteur += 0.5f; break;
+                case HealthProfileConstants.FAIBLE: facteur += 0.1f; break;
+                case HealthProfileConstants.MODERE: facteur += 0.3f; break;
+                case HealthProfileConstants.FORTE: facteur += 0.5f; break;
             }
         }
 
