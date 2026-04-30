@@ -32,10 +32,12 @@ US 7 : Améliorer mock données capteur stream continue (3 min une journée)
 
 
 **R3**
-US 9 : Afficher le score de risque personnalisé par quartier
--> En cours : création de class de calcul pour adapter le score aux données santé de l'utilisateur.
-US 10 : Afficher libellés de score de risque et correspondance couleurs pour chaque score
-US 11 : Visualisation des polygones avec risque personnalisé
+US 9 : Afficher le score de risque personnalisé, libellés de score de risque
+et correspondance couleurs pour chaque par quartier
+-> Terminé : calcule des scores de pollution et pollen adaptée aux données utilisateur,
+determine libellé et couleur en fonction du score et donne un score de risque global
+US 10 : Visualisation des polygones avec risque personnalisé
+-> En cours
 
 
 
