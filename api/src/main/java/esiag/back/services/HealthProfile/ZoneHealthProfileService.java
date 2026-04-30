@@ -36,7 +36,7 @@ public class ZoneHealthProfileService {
             properties.put("idZone", shpz.getIdZone());
             properties.put("score_pollution_ajuste", shpz.getScorePollutionAjuste());
             properties.put("score_pollen_ajuste", shpz.getScorePollenAjuste());
-            properties.put("score_global", shpz.getScoreRisqueGlobal());
+            properties.put("score_risque_global", shpz.getScoreRisqueGlobal());
             properties.put("libelle_pollution", libelleCouleurPollution[0]);
             properties.put("couleur_pollution", libelleCouleurPollution[1]);
             properties.put("libelle_pollen", libelleCouleurPollen[0]);
