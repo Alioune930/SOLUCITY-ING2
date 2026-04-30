@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -31,14 +32,28 @@ public class HealthProfileReportController {
     @Autowired
     private ScorePollenService scorePollenService;
 
+//    @GetMapping(value = "/health-profile/report", produces = MediaType.TEXT_PLAIN_VALUE)
+//    public String getHealthProfileReport() {
+//
+//        HealthProfil profil = new HealthProfil();
+//        profil.setAsthme(true);
+//        profil.setDeclencheur("pollution et pollen");
+//        profil.setSensibilitePollution("severe");
+//        profil.setSensibilitePollen("forte");
+
     @GetMapping(value = "/health-profile/report", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String getHealthProfileReport() {
+    public String getHealthProfileReport(
+            @RequestParam(value = "asthme", defaultValue = "false") boolean asthme,
+            @RequestParam(value = "type", defaultValue = "") String type,
+            @RequestParam(value = "polluLvl", defaultValue = "") String polluLvl,
+            @RequestParam(value = "pollenLvl", defaultValue = "") String pollenLvl
+    ) {
 
         HealthProfil profil = new HealthProfil();
-        profil.setAsthme(true);
-        profil.setDeclencheur("pollution et pollen");
-        profil.setSensibilitePollution("severe");
-        profil.setSensibilitePollen("forte");
+        profil.setAsthme(asthme);
+        profil.setDeclencheur(type);
+        profil.setSensibilitePollution(polluLvl);
+        profil.setSensibilitePollen(pollenLvl);
 
         List<ScoreHealthProfileZone> zones = scoreHealthProfileService.calculeScoresParZone(profil);
 
