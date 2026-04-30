@@ -36,8 +36,9 @@ US 9 : Afficher le score de risque personnalisé, libellés de score de risque
 et correspondance couleurs pour chaque par quartier
 -> Terminé : calcule des scores de pollution et pollen adaptée aux données utilisateur,
 determine libellé et couleur en fonction du score et donne un score de risque global
+ + api qui reçoit le profil santé de l'utilisateur et renvoie les données calculées
 US 10 : Visualisation des polygones avec risque personnalisé
--> En cours
+-> Terminé : ajout du chemin de l'api dans le front
 
 
 
