@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import ClimateMap from "../components/ClimateMap";
 import RoadMap from "../components/RoadMap";
+import SensitiveMap from "../components/SensitiveMap";
 
 const MAP_MODES = [
     { value: "ClimateMap", label: "Qualité de l'air" },
     { value: "RoadMap", label: "Réseau routier" },
+    {value: "SensitiveMap", label: "Profil Sensible"}
 ];
 
 const CLIMATE_FILTERS = [
@@ -53,6 +55,7 @@ export default function MapView() {
             <div style={{ flexGrow: 1 }}>
                 {mode === "ClimateMap" && <ClimateMap displayFilter={filter} />}
                 {mode === "RoadMap" && <RoadMap />}
+                {mode === "SensitiveMap" && <SensitiveMap />}
             </div>
         </div>
     );
