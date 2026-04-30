@@ -1,6 +1,13 @@
 import React from "react";
 
 export default function Profile({ data, setData, onCheck }) {
+    const isPollutionSelected = data.allergyType === "pollution" || data.allergyType === "pollution et pollen";
+    const isPollenSelected = data.allergyType === "pollen" || data.allergyType === "pollution et pollen";
+
+    const updateField = (field, value) => {
+        setData({ ...data, [field]: value });
+    };
+
     return (
         <div className="container mt-4" style={{ maxWidth: "600px" }}>
             <div className="card shadow p-4">
@@ -10,9 +17,13 @@ export default function Profile({ data, setData, onCheck }) {
                     <input 
                         className="form-check-input" 
                         type="checkbox" 
-                        onChange={e => setData({...data, isAsthmatic: e.target.checked})} 
+                        id="asthmaCheck"
+                        checked={data.isAsthmatic}
+                        onChange={e => updateField("isAsthmatic", e.target.checked)} 
                     />
-                    <label className="form-check-label">Êtes-vous asthmatique ?</label>
+                    <label className="form-check-label" htmlFor="asthmaCheck">
+                        Êtes-vous asthmatique ?
+                    </label>
                 </div>
 
                 <div className="mb-3">
@@ -20,34 +31,40 @@ export default function Profile({ data, setData, onCheck }) {
                     <select 
                         className="form-select" 
                         value={data.allergyType}
-                        onChange={e => setData({...data, allergyType: e.target.value})}
+                        onChange={e => updateField("allergyType", e.target.value)}
                     >
                         <option value="pollen">Pollen</option>
                         <option value="pollution">Pollution</option>
-                        <option value="both">Pollution et Pollen</option>
+                        <option value="pollution et pollen">Pollution et Pollen</option>
                     </select>
                 </div>
 
-                {/* Pollution */}
-                {(data.allergyType === "pollution" || data.allergyType === "both") && (
+                {isPollutionSelected && (
                     <div className="mb-3 p-2 border rounded bg-light">
                         <label className="form-label">Sensibilité pollution :</label>
-                        <select className="form-select" onChange={e => setData({...data, pollutionLevel: e.target.value})}>
-                            <option value="LEGER">Légère</option>
-                            <option value="MODERE">Modérée</option>
-                            <option value="SEVERE">Sévère</option>
+                        <select 
+                            className="form-select" 
+                            value={data.pollutionLevel}
+                            onChange={e => updateField("pollutionLevel", e.target.value)}
+                        >
+                            <option value="leger">Légère</option>
+                            <option value="moyenne">Moyenne</option>
+                            <option value="severe">Sévère</option>
                         </select>
                     </div>
                 )}
 
-                {/* Pollen */}
-                {(data.allergyType === "pollen" || data.allergyType === "both") && (
+                {isPollenSelected && (
                     <div className="mb-3 p-2 border rounded bg-light">
                         <label className="form-label">Sensibilité pollen :</label>
-                        <select className="form-select" onChange={e => setData({...data, pollenLevel: e.target.value})}>
-                            <option value="FAIBLE">Faible</option>
-                            <option value="MOYENNE">Moyenne</option>
-                            <option value="FORTE">Forte</option>
+                        <select 
+                            className="form-select" 
+                            value={data.pollenLevel}
+                            onChange={e => updateField("pollenLevel", e.target.value)}
+                        >
+                            <option value="faible">Faible</option>
+                            <option value="modéré">Modérée</option>
+                            <option value="forte">Forte</option>
                         </select>
                     </div>
                 )}
