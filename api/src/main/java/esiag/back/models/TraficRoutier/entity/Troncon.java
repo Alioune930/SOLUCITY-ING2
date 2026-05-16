@@ -12,18 +12,27 @@ import java.util.List;
 public class Troncon {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
-    private double length;
+    private double longueur;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "troncon_id")
     private List<Coordonnee> coordonnees = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    private Congestion congestion;
+    @Column(nullable = false)
+    private CongestionNiveau congestionNiveau;
 
     @OneToMany(mappedBy = "troncon", cascade = CascadeType.ALL)
     private List<Evenement> evenements = new ArrayList<>();
+
+    @OneToMany(mappedBy = "troncon", cascade = CascadeType.ALL)
+    private List<Voie> voies = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "route_id")
+    private Route route;
 }
