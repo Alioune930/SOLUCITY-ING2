@@ -1,5 +1,6 @@
 package esiag.back.models.TraficRoutier.dto;
 
+import esiag.back.models.TraficRoutier.entity.Troncon;
 import lombok.Data;
 
 @Data
