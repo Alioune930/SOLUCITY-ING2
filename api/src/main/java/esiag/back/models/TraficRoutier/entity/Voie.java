@@ -14,7 +14,10 @@ public class Voie {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String nom;
+
+    @Column(nullable = false)
+    private String statut;
 
     @ManyToOne
     @JoinColumn(name = "troncon_id")

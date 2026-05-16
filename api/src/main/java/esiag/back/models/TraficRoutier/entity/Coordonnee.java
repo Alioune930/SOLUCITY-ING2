@@ -1,5 +1,7 @@
 package esiag.back.models.TraficRoutier.entity;
+
 import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
@@ -16,4 +18,7 @@ public class Coordonnee {
 
     @Column(nullable = false)
     private double longitude;
+
+    @Column(nullable = false)
+    private int ordre;
 }
