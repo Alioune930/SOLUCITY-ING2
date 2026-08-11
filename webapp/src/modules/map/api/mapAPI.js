@@ -16,3 +16,12 @@ export async function fetchPollen() {
     return response.json();
 }
 
+export async function fetchTronconsCarte() {
+    const response = await fetch("/api/trafic/troncons/carte");
+
+    if (!response.ok) {
+        throw new Error("Erreur lors du chargement des tronçons");
+    }
+
+    return response.json();
+}
