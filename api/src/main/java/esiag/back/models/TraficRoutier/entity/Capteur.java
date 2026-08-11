@@ -2,6 +2,9 @@ package esiag.back.models.TraficRoutier.entity;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
@@ -22,4 +25,7 @@ public class Capteur {
     @ManyToOne
     @JoinColumn(name = "troncon_id")
     private Troncon troncon;
+
+    @OneToMany(mappedBy = "capteur", cascade = CascadeType.ALL)
+    private List<MesureTrafic> mesures = new ArrayList<>();
 }

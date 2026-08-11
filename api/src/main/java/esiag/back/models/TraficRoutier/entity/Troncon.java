@@ -11,20 +11,22 @@ import java.util.List;
 @Data
 public class Troncon {
 
-    @Id
+    @Id                                 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private double longueur;
 
+    // @Column(nullable = false)
+    // private String nom;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "troncon_id")
     private List<Coordonnee> coordonnees = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private CongestionNiveau congestionNiveau;
+    @OneToMany(mappedBy = "troncon", cascade = CascadeType.ALL)
+    private List<Congestion> congestions = new ArrayList<>();
 
     @OneToMany(mappedBy = "troncon", cascade = CascadeType.ALL)
     private List<Evenement> evenements = new ArrayList<>();
@@ -35,4 +37,7 @@ public class Troncon {
     @ManyToOne
     @JoinColumn(name = "route_id")
     private Route route;
+
+    @OneToMany(mappedBy = "troncon", cascade = CascadeType.ALL)
+    private List<Capteur> capteurs = new ArrayList<>();
 }

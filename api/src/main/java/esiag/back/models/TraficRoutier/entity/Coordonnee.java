@@ -19,6 +19,6 @@ public class Coordonnee {
     @Column(nullable = false)
     private double longitude;
 
-    @Column(nullable = false)
-    private int ordre;
+    // @Column(nullable = false)
+    // private int ordre;
 }
