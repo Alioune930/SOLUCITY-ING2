@@ -3,7 +3,7 @@ package esiag.back.controllers.TraficRoutier;
 import esiag.back.models.TraficRoutier.entity.Troncon;
 import esiag.back.services.TraficRoutier.TronconService;
 import org.springframework.web.bind.annotation.*;
-
+import esiag.back.models.TraficRoutier.dto.TronconCarteDTO;
 import java.util.List;
 
 @RestController
@@ -35,5 +35,10 @@ public class TronconController {
     @DeleteMapping("/{id}")
     public void deleteTroncon(@PathVariable Long id) {
         tronconService.delete(id);
+    }
+
+    @GetMapping("/carte")
+        public List<TronconCarteDTO> getTronconsPourCarte() {
+        return tronconService.getTronconsPourCarte();
     }
 }
