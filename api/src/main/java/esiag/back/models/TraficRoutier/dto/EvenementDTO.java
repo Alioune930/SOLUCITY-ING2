@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class EvenementDTO {
 
-    private String id;
+    private Long id;
+    private String type;
     private String description;
+    private Long tronconId;
 }

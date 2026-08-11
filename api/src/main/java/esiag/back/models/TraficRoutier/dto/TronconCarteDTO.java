@@ -1,13 +1,17 @@
 package esiag.back.models.TraficRoutier.dto;
 
 import lombok.Data;
+
 import java.util.List;
 
 @Data
-public class TronconDTO {
+public class TronconCarteDTO {
 
     private Long id;
+
+    private String nom;
+
     private double longueur;
-    private String congestionNiveau;
+
     private List<CoordonneeDTO> coordonnees;
 }
