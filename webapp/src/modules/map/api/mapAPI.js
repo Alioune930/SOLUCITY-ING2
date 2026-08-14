@@ -25,3 +25,13 @@ export async function fetchTronconsCarte() {
 
     return response.json();
 }
+
+export async function fetchCongestionsCarte() {
+    const response = await fetch("/api/trafic/congestions/carte");
+
+    if (!response.ok) {
+        throw new Error("Erreur lors du chargement des congestions");
+    }
+
+    return response.json();
+}
