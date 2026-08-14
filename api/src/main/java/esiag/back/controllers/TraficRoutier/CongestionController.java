@@ -3,6 +3,7 @@ package esiag.back.controllers.TraficRoutier;
 import esiag.back.models.TraficRoutier.entity.Congestion;
 import esiag.back.services.TraficRoutier.CongestionService;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 import java.util.List;
 
@@ -22,11 +23,6 @@ public class CongestionController {
         return congestionService.getAll();
     }
 
-    @GetMapping("/{id}")
-    public Congestion getCongestionById(@PathVariable Long id) {
-        return congestionService.getById(id).orElse(null);
-    }
-
     @PostMapping
     public Congestion createCongestion(@RequestBody Congestion congestion) {
         return congestionService.save(congestion);
@@ -36,4 +32,25 @@ public class CongestionController {
     public void deleteCongestion(@PathVariable Long id) {
         congestionService.delete(id);
     }
+
+    @PostMapping("/recalculer")
+    public void recalculer() {
+        congestionService.recalculerToutesLesCongestions();
+    }
+
+    @PostMapping("/recalculer/{capteurId}")
+    public void recalculerPourCapteur(@PathVariable Long capteurId) {
+        congestionService.recalculerPourCapteur(capteurId);
+    }
+
+    @GetMapping("/{id}")
+    public Congestion getCongestionById(@PathVariable Long id) {
+        return congestionService.getById(id).orElse(null);
+    }
+
+    @GetMapping("/carte")
+    public Map<Long, String> getCongestionsPourCarte() {
+        return congestionService.getCongestionsPourCarte();
+    }
+
 }
