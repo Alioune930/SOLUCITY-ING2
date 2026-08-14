@@ -41,4 +41,5 @@ public class TronconController {
         public List<TronconCarteDTO> getTronconsPourCarte() {
         return tronconService.getTronconsPourCarte();
     }
+    
 }

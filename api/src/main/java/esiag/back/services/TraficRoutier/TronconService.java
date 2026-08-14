@@ -44,7 +44,10 @@ public class TronconService {
             TronconCarteDTO dto = new TronconCarteDTO();
 
             dto.setId(troncon.getId());
-            // dto.setNom(troncon.getNom());
+            dto.setNom(
+                    troncon.getRoute() != null
+                            ? troncon.getRoute().getNom()
+                            : "Route inconnue");
             dto.setLongueur(troncon.getLongueur());
 
             List<CoordonneeDTO> coordonneesDTO = troncon.getCoordonnees().stream().map(coordonnee -> {
