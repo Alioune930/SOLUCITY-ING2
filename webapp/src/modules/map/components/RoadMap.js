@@ -49,7 +49,6 @@ function convertirEnGeoJSON(troncons, congestions) {
                     id: troncon.id,
                     nom: troncon.nom || "Route inconnue",
                     longueur: troncon.longueur,
-
                     congestion:
                         congestions[String(troncon.id)] || "INCONNUE",
                 },
@@ -74,6 +73,7 @@ export default function RoadMap() {
 
     const [troncons, setTroncons] = useState([]);
     const [congestions, setCongestions] = useState({});
+    const [tronconSelectionne, setTronconSelectionne] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -92,7 +92,6 @@ export default function RoadMap() {
 
                 setTroncons(tronconsData);
                 setCongestions(congestionsData);
-
                 setError(null);
 
             } catch (err) {
@@ -139,147 +138,124 @@ export default function RoadMap() {
             `Congestion : ${congestion}<br/>` +
             `Longueur : ${longueur ?? "N/A"} m`
         );
+
+        layer.on("click", () => {
+
+            if (
+                congestion === "MOYEN" ||
+                congestion === "SATURE"
+            ) {
+                setTronconSelectionne(feature.properties);
+            } else {
+                setTronconSelectionne(null);
+            }
+
+        });
     };
 
     return (
-        <MapContainer
-            center={center}
-            zoom={15}
-            style={{ height: "90vh" }}
-        >
+        <div style={{ height: "90vh", position: "relative" }}>
 
-            <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution="© OpenStreetMap"
-            />
-
-            <Polygon
-                positions={boundary}
-                pathOptions={{
-                    color: "black",
-                    weight: 3,
-                    fillOpacity: 0,
-                }}
-            />
-
-            {loading && (
+            {tronconSelectionne && (
                 <div
                     style={{
                         position: "absolute",
                         zIndex: 1000,
                         top: "10px",
-                        left: "10px",
+                        right: "10px",
                         background: "white",
-                        padding: "10px",
+                        padding: "15px",
+                        borderRadius: "5px",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                        minWidth: "250px",
                     }}
                 >
-                    Chargement du réseau routier...
+                    <strong>Tronçon sélectionné</strong>
+
+                    <p>
+                        <strong>Route :</strong>{" "}
+                        {tronconSelectionne.nom}
+                    </p>
+
+                    <p>
+                        <strong>Congestion :</strong>{" "}
+                        {tronconSelectionne.congestion}
+                    </p>
+
+                    <p>
+                        <strong>Longueur :</strong>{" "}
+                        {tronconSelectionne.longueur ?? "N/A"} m
+                    </p>
+
+                    <button
+                        onClick={() => setTronconSelectionne(null)}
+                    >
+                        Fermer
+                    </button>
                 </div>
             )}
 
-            {error && (
-                <div
-                    style={{
-                        position: "absolute",
-                        zIndex: 1000,
-                        top: "10px",
-                        left: "10px",
-                        background: "white",
-                        padding: "10px",
-                    }}
-                >
-                    {error}
-                </div>
-            )}
+            <MapContainer
+                center={center}
+                zoom={15}
+                style={{ height: "100%", width: "100%" }}
+            >
 
-            {!loading && !error && (
-                <GeoJSON
-                    key={JSON.stringify(congestions)}
-                    data={roadsGeoJSON}
-                    style={getRoadStyle}
-                    onEachFeature={onEachRoad}
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution="© OpenStreetMap"
                 />
-            )}
 
-        </MapContainer>
+                <Polygon
+                    positions={boundary}
+                    pathOptions={{
+                        color: "black",
+                        weight: 3,
+                        fillOpacity: 0,
+                    }}
+                />
+
+                {loading && (
+                    <div
+                        style={{
+                            position: "absolute",
+                            zIndex: 1000,
+                            top: "10px",
+                            left: "10px",
+                            background: "white",
+                            padding: "10px",
+                        }}
+                    >
+                        Chargement du réseau routier...
+                    </div>
+                )}
+
+                {error && (
+                    <div
+                        style={{
+                            position: "absolute",
+                            zIndex: 1000,
+                            top: "10px",
+                            left: "10px",
+                            background: "white",
+                            padding: "10px",
+                        }}
+                    >
+                        {error}
+                    </div>
+                )}
+
+                {!loading && !error && (
+                    <GeoJSON
+                        key={JSON.stringify(congestions)}
+                        data={roadsGeoJSON}
+                        style={getRoadStyle}
+                        onEachFeature={onEachRoad}
+                    />
+                )}
+
+            </MapContainer>
+
+        </div>
     );
 }
-
-// import React from "react";
-// import { MapContainer, TileLayer, GeoJSON, Polygon } from "react-leaflet";
-// import "leaflet/dist/leaflet.css";
-// import L from "leaflet";
-// import honfleurContours from "../../../data/Honfleur-contours.json";
-// import honfleurRoads from "../../../data/honfleur-roads.json";
-
-// delete L.Icon.Default.prototype._getIconUrl;
-// L.Icon.Default.mergeOptions({
-//     iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-//     iconUrl: require("leaflet/dist/images/marker-icon.png"),
-//     shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
-// });
-
-// const ROAD_TYPES = ["primary", "secondary", "tertiary", "trunk"];
-// const CONGESTION_LEVELS = ["fluide", "dense", "saturée"];
-// const ROAD_STATUSES = ["ouverte", "fermée", "travaux"];
-
-// function randomFrom(arr) {
-//     return arr[Math.floor(Math.random() * arr.length)];
-// }
-
-// function getRoadStyle() {
-//     const congestion = randomFrom(CONGESTION_LEVELS);
-//     const status = randomFrom(ROAD_STATUSES);
-
-//     const colorMap = { fluide: "green", dense: "orange", saturée: "red" };
-
-//     return {
-//         color: colorMap[congestion],
-//         weight: status === "fermée" ? 6 : 4,
-//         dashArray: status === "travaux" ? "6 4" : null,
-//     };
-// }
-
-// export default function RoadMap() {
-//     const center = [49.4194, 0.2329];
-
-//     const roadsFiltered = {
-//         type: "FeatureCollection",
-//         features: honfleurRoads.features.filter(
-//             (f) => ROAD_TYPES.includes(f.properties?.highway)
-//         ),
-//     };
-
-//     const boundary = honfleurContours.features[0].geometry.coordinates[0].map(
-//         ([lng, lat]) => [lat, lng]
-//     );
-
-//     const onEachRoad = (feature, layer) => {
-//         const congestion = randomFrom(CONGESTION_LEVELS);
-//         const status = randomFrom(ROAD_STATUSES);
-//         const name = feature.properties?.name || "Route inconnue";
-
-//         layer.bindTooltip(
-//             `<strong>${name}</strong><br/>État : ${status}<br/>Congestion : ${congestion}`
-//         );
-//     };
-
-//     return (
-//         <MapContainer center={center} zoom={15} style={{ height: "90vh" }}>
-//             <TileLayer
-//                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-//                 attribution="© OpenStreetMap"
-//             />
-//             <Polygon
-//                 positions={boundary}
-//                 pathOptions={{ color: "black", weight: 3, fillOpacity: 0 }}
-//             />
-//             <GeoJSON
-//                 data={roadsFiltered}
-//                 style={getRoadStyle}
-//                 onEachFeature={onEachRoad}
-//             />
-//         </MapContainer>
-//     );
-// }
-
