@@ -12,4 +12,5 @@ public class ActionRegulationDTO {
     private LocalDateTime dateAction;
     private String statut;
     private Long tronconId;
+    private Long voieId;
 }

@@ -50,7 +50,13 @@ function convertirEnGeoJSON(troncons, congestions) {
                     nom: troncon.nom || "Route inconnue",
                     longueur: troncon.longueur,
                     congestion:
-                        congestions[String(troncon.id)] || "INCONNUE",
+                        congestions[String(troncon.id)]?.niveau || "INCONNUE",
+
+                    tauxOccupation:
+                        congestions[String(troncon.id)]?.tauxOccupation ?? null,
+
+                    vitesseMoyenne:
+                        congestions[String(troncon.id)]?.vitesseMoyenne ?? null,
                 },
 
                 geometry: {
@@ -133,6 +139,9 @@ export default function RoadMap() {
         const congestion =
             feature.properties?.congestion || "INCONNUE";
 
+        const tauxOccupation =
+            feature.properties?.tauxOccupation;
+
         layer.bindTooltip(
             `<strong>${name}</strong><br/>` +
             `Congestion : ${congestion}<br/>` +
@@ -180,6 +189,11 @@ export default function RoadMap() {
                     <p>
                         <strong>Congestion :</strong>{" "}
                         {tronconSelectionne.congestion}
+                    </p>
+
+                    <p>
+                        <strong>Taux d'occupation :</strong>{" "}
+                        {tronconSelectionne.tauxOccupation ?? "N/A"} %
                     </p>
 
                     <p>

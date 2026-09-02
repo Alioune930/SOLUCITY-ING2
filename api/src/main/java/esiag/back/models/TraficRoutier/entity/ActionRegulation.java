@@ -25,4 +25,8 @@ public class ActionRegulation {
     @ManyToOne
     @JoinColumn(name = "troncon_id")
     private Troncon troncon;
+
+    @ManyToOne
+    @JoinColumn(name = "voie_id")
+    private Voie voie;  
 }

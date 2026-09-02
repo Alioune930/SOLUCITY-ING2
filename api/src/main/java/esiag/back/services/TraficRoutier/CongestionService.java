@@ -1,5 +1,6 @@
 package esiag.back.services.TraficRoutier;
 
+import esiag.back.models.TraficRoutier.dto.CongestionCarteDTO;
 import esiag.back.models.TraficRoutier.entity.Capteur;
 import esiag.back.models.TraficRoutier.entity.Congestion;
 import esiag.back.models.TraficRoutier.entity.CongestionNiveau;
@@ -11,7 +12,7 @@ import esiag.back.repositories.TraficRoutier.MesureTraficRepository;
 import esiag.back.repositories.TraficRoutier.TronconRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import esiag.back.models.TraficRoutier.dto.CongestionCarteDTO;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -211,13 +212,21 @@ public class CongestionService {
         }
     }
 
-    public java.util.Map<Long, String> getCongestionsPourCarte() {
+    public Map<Long, CongestionCarteDTO> getCongestionsPourCarte() {
 
         return congestionRepository.findAll()
                 .stream()
                 .filter(c -> c.getTroncon() != null)
-                .collect(java.util.stream.Collectors.toMap(
+                .collect(Collectors.toMap(
                         c -> c.getTroncon().getId(),
-                        c -> c.getNiveau().name()));
+                        c -> {
+                            CongestionCarteDTO dto = new CongestionCarteDTO();
+
+                            dto.setNiveau(c.getNiveau().name());
+                            dto.setTauxOccupation(c.getTauxOccupation());
+                            dto.setVitesseMoyenne(c.getVitesseMoyenne());
+
+                            return dto;
+                        }));
     }
 }

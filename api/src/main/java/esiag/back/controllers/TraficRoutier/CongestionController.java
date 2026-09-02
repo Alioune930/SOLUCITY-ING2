@@ -1,5 +1,6 @@
 package esiag.back.controllers.TraficRoutier;
 
+import esiag.back.models.TraficRoutier.dto.CongestionCarteDTO;
 import esiag.back.models.TraficRoutier.entity.Congestion;
 import esiag.back.services.TraficRoutier.CongestionService;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +50,7 @@ public class CongestionController {
     }
 
     @GetMapping("/carte")
-    public Map<Long, String> getCongestionsPourCarte() {
+    public Map<Long, CongestionCarteDTO> getCongestionsPourCarte() {
         return congestionService.getCongestionsPourCarte();
     }
 
