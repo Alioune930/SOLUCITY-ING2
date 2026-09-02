@@ -5,7 +5,7 @@ import esiag.back.services.TraficRoutier.TronconService;
 import org.springframework.web.bind.annotation.*;
 import esiag.back.models.TraficRoutier.dto.TronconCarteDTO;
 import java.util.List;
-
+import esiag.back.models.TraficRoutier.dto.TronconCarteDTO;
 @RestController
 @RequestMapping("/api/trafic/troncons")
 @CrossOrigin("*")
@@ -38,8 +38,13 @@ public class TronconController {
     }
 
     @GetMapping("/carte")
-        public List<TronconCarteDTO> getTronconsPourCarte() {
+    public List<TronconCarteDTO> getTronconsPourCarte() {
         return tronconService.getTronconsPourCarte();
     }
-    
+
+    @GetMapping("/problemes")
+    public List<TronconCarteDTO> getTronconsProblemes() {
+        return tronconService.getTronconsProblemes();
+    }
+
 }
