@@ -1,6 +1,7 @@
 package esiag.back.controllers.TraficRoutier;
 
 import esiag.back.models.TraficRoutier.dto.ActionRegulationSimulationDTO;
+import esiag.back.models.TraficRoutier.entity.ActionRegulation;
 import esiag.back.services.TraficRoutier.ActionRegulationService;
 
 import org.springframework.web.bind.annotation.*;
@@ -28,4 +29,19 @@ public class ActionRegulationController {
                 voieId,
                 typeAction);
     }
+
+    @PostMapping("/appliquer")
+    public String appliquer(
+            @RequestParam Long tronconId,
+            @RequestParam Long voieId,
+            @RequestParam String typeAction) {
+
+        actionRegulationService.appliquer(
+                tronconId,
+                voieId,
+                typeAction);
+
+        return "Régulation appliquée avec succès";
+    }
+
 }
