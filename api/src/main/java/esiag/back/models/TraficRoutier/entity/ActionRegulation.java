@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "action_regulation")
@@ -22,6 +23,7 @@ public class ActionRegulation {
 
     private String statut;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "troncon_id")
     private Troncon troncon;
