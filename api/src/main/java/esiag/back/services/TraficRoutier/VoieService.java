@@ -31,4 +31,9 @@ public class VoieService {
     public void delete(Long id) {
         voieRepository.deleteById(id);
     }
+
+    public List<Voie> getByTronconId(Long tronconId) {
+        return voieRepository.findByTronconId(tronconId);
+    }
+    
 }
