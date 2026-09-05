@@ -36,4 +36,9 @@ public class VoieController {
     public void deleteVoie(@PathVariable Long id) {
         voieService.delete(id);
     }
+
+    @GetMapping("/troncon/{tronconId}")
+    public List<Voie> getVoiesByTroncon(@PathVariable Long tronconId) {
+        return voieService.getByTronconId(tronconId);
+    }
 }
