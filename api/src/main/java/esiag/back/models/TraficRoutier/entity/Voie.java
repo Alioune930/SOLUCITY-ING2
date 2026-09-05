@@ -4,11 +4,12 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "voie")
 @Data
 public class Voie {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,5 +22,6 @@ public class Voie {
 
     @ManyToOne
     @JoinColumn(name = "troncon_id")
+    @JsonIgnore
     private Troncon troncon;
 }
