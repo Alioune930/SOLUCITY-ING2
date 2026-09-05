@@ -147,4 +147,68 @@ public class ActionRegulationService {
 
         return dto;
     }
+
+    public ActionRegulation appliquer(
+        Long tronconId,
+        Long voieId,
+        String typeAction) {
+
+    Voie voie = voieRepository.findById(voieId)
+            .orElseThrow(() -> new IllegalArgumentException(
+                    "Voie introuvable"));
+
+    if (voie.getTroncon() == null
+            || !voie.getTroncon().getId().equals(tronconId)) {
+        throw new IllegalArgumentException(
+                "La voie ne correspond pas au tronçon");
+    }
+
+    if ("OUVRIR_VOIE".equalsIgnoreCase(typeAction)) {
+
+        if ("OUVERTE".equalsIgnoreCase(voie.getStatut())) {
+            throw new IllegalArgumentException(
+                    "La voie sélectionnée est déjà ouverte");
+        }
+
+        voie.setStatut("OUVERTE");
+
+    } else if ("FERMER_VOIE".equalsIgnoreCase(typeAction)) {
+
+        if ("FERMEE".equalsIgnoreCase(voie.getStatut())) {
+            throw new IllegalArgumentException(
+                    "La voie sélectionnée est déjà fermée");
+        }
+
+        List<Voie> voies = voieRepository.findByTronconId(tronconId);
+
+        long voiesOuvertes = voies.stream()
+                .filter(v -> "OUVERTE".equalsIgnoreCase(v.getStatut()))
+                .count();
+
+        if (voiesOuvertes <= 1) {
+            throw new IllegalArgumentException(
+                    "Impossible de fermer la dernière voie ouverte");
+        }
+
+        voie.setStatut("FERMEE");
+
+    } else {
+        throw new IllegalArgumentException(
+                "Type d'action non pris en charge");
+    }
+
+    voieRepository.save(voie);
+
+    ActionRegulation action = new ActionRegulation();
+    action.setTypeAction(typeAction.toUpperCase());
+    action.setDescription(
+            "Application de l'action "
+                    + typeAction.toUpperCase()
+                    + " sur " + voie.getNom());
+    action.setDateAction(java.time.LocalDateTime.now());
+    action.setStatut("APPLIQUEE");
+    action.setTroncon(voie.getTroncon());
+
+    return actionRegulationRepository.save(action);
+}
 }
