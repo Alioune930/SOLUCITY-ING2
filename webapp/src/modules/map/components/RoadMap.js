@@ -7,6 +7,9 @@ import honfleurContours from "../../../data/Honfleur-contours.json";
 import {
     fetchTronconsCarte,
     fetchCongestionsCarte,
+    fetchVoiesByTroncon,
+    simulerRegulation,
+    appliquerRegulation
 } from "../api/mapAPI";
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -80,6 +83,16 @@ export default function RoadMap() {
     const [troncons, setTroncons] = useState([]);
     const [congestions, setCongestions] = useState({});
     const [tronconSelectionne, setTronconSelectionne] = useState(null);
+    const [voies, setVoies] = useState([]);
+    const [loadingVoies, setLoadingVoies] = useState(false);
+    const [errorVoies, setErrorVoies] = useState(null);
+    const [voieSelectionnee, setVoieSelectionnee] = useState(null);
+    const [simulation, setSimulation] = useState(null);
+    const [loadingSimulation, setLoadingSimulation] = useState(false);
+    const [errorSimulation, setErrorSimulation] = useState(null);
+    const [applicationEnCours, setApplicationEnCours] = useState(false);
+    const [messageApplication, setMessageApplication] = useState(null);
+    const [erreurApplication, setErreurApplication] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -119,6 +132,43 @@ export default function RoadMap() {
         chargerDonnees();
 
     }, []);
+    useEffect(() => {
+        setVoieSelectionnee(null);
+        setSimulation(null);
+        setErrorSimulation(null);
+
+        if (!tronconSelectionne) {
+            setVoies([]);
+            return;
+        }
+
+        async function chargerVoies() {
+            try {
+                setLoadingVoies(true);
+                setErrorVoies(null);
+
+                const voiesData = await fetchVoiesByTroncon(
+                    tronconSelectionne.id
+                );
+
+                setVoies(voiesData);
+            } catch (err) {
+                console.error(
+                    "Erreur lors du chargement des voies :",
+                    err
+                );
+
+                setErrorVoies(
+                    "Impossible de charger les voies de ce tronçon."
+                );
+                setVoies([]);
+            } finally {
+                setLoadingVoies(false);
+            }
+        }
+
+        chargerVoies();
+    }, [tronconSelectionne]);
 
     const roadsGeoJSON =
         convertirEnGeoJSON(troncons, congestions);
@@ -162,6 +212,104 @@ export default function RoadMap() {
         });
     };
 
+    const lancerSimulation = async (typeAction) => {
+        if (!tronconSelectionne || !voieSelectionnee) {
+            return;
+        }
+
+        try {
+            setLoadingSimulation(true);
+            setErrorSimulation(null);
+            setSimulation(null);
+
+            const resultat = await simulerRegulation(
+                tronconSelectionne.id,
+                voieSelectionnee.id,
+                typeAction
+            );
+            setSimulation({
+                ...resultat,
+                typeAction,
+            });
+
+        } catch (err) {
+            console.error(
+                "Erreur lors de la simulation :",
+                err
+            );
+
+            setErrorSimulation(
+                "Impossible de lancer la simulation."
+            );
+        } finally {
+            setLoadingSimulation(false);
+        }
+    };
+    const appliquerLaRegulation = async () => {
+        if (!tronconSelectionne || !voieSelectionnee || !simulation) {
+            return;
+        }
+
+        setApplicationEnCours(true);
+        setMessageApplication(null);
+        setErreurApplication(null);
+
+        try {
+            await appliquerRegulation(
+                tronconSelectionne.id,
+                voieSelectionnee.id,
+                simulation.typeAction
+            );
+
+            // Actualiser les voies du tronçon
+            const voiesActualisees = await fetchVoiesByTroncon(
+                tronconSelectionne.id
+            );
+
+            setVoies(voiesActualisees);
+
+            const voieActualisee = voiesActualisees.find(
+                (voie) => voie.id === voieSelectionnee.id
+            );
+
+            setVoieSelectionnee(voieActualisee || null);
+
+            // Actualiser les données de la carte
+            const [tronconsActualises, congestionsActualisees] =
+                await Promise.all([
+                    fetchTronconsCarte(),
+                    fetchCongestionsCarte(),
+                ]);
+
+            setTroncons(tronconsActualises);
+            setCongestions(congestionsActualisees);
+
+            const tronconActualise = tronconsActualises.find(
+                (troncon) => troncon.id === tronconSelectionne.id
+            );
+
+            if (tronconActualise) {
+                const congestionActualisee =
+                    congestionsActualisees[String(tronconActualise.id)];
+
+                setTronconSelectionne({
+                    ...tronconActualise,
+                    congestion: congestionActualisee?.niveau || "INCONNUE",
+                    tauxOccupation: congestionActualisee?.tauxOccupation ?? null,
+                    vitesseMoyenne: congestionActualisee?.vitesseMoyenne ?? null,
+                });
+            }
+            setSimulation(null);
+
+            setMessageApplication("Régulation appliquée avec succès.");
+
+        } catch (error) {
+            setErreurApplication(error.message);
+        } finally {
+            setApplicationEnCours(false);
+        }
+    };
+
     return (
         <div style={{ height: "90vh", position: "relative" }}>
 
@@ -201,6 +349,158 @@ export default function RoadMap() {
                         {tronconSelectionne.longueur ?? "N/A"} m
                     </p>
 
+                    <hr />
+
+                    <strong>Voies du tronçon</strong>
+
+                    {loadingVoies && <p>Chargement des voies...</p>}
+
+                    {errorVoies && <p>{errorVoies}</p>}
+
+                    {!loadingVoies && !errorVoies && voies.length === 0 && (
+                        <p>Aucune voie trouvée.</p>
+                    )}
+
+                    {!loadingVoies && !errorVoies && voies.length > 0 && (
+                        <ul>
+                            {voies.map((voie) => (
+                                <li key={voie.id}>
+                                    {voie.nom} — {voie.statut}
+                                </li>
+                            ))}
+                        </ul>
+
+
+
+
+                    )}
+                    {voies.length > 0 && (
+                        <div>
+                            <h4>Choisir une voie</h4>
+
+                            <select
+                                value={voieSelectionnee?.id || ""}
+                                onChange={(e) => {
+                                    const voie = voies.find(
+                                        (v) => v.id === Number(e.target.value)
+                                    );
+
+                                    setVoieSelectionnee(voie);
+                                    setSimulation(null);
+                                }}
+                            >
+                                <option value="">Sélectionner une voie</option>
+
+                                {voies.map((voie) => (
+                                    <option key={voie.id} value={voie.id}>
+                                        {voie.nom} — {voie.statut}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                    {voieSelectionnee && (
+                        <div>
+                            <h4>Simuler une régulation</h4>
+
+                            <button
+                                onClick={() => lancerSimulation("OUVRIR_VOIE")}
+                                disabled={
+                                    loadingSimulation ||
+                                    voieSelectionnee.statut === "OUVERTE"
+                                }
+                            >
+                                Ouvrir la voie
+                            </button>
+
+                            <button
+                                onClick={() => lancerSimulation("FERMER_VOIE")}
+                                disabled={
+                                    loadingSimulation ||
+                                    voieSelectionnee.statut === "FERMEE" ||
+                                    voies.filter((voie) => voie.statut === "OUVERTE").length <= 1
+                                }
+                            >
+                                Fermer la voie
+                            </button>
+                        </div>
+                    )}
+                    {loadingSimulation && (
+                        <p>Simulation en cours...</p>
+                    )}
+
+                    {errorSimulation && (
+                        <p style={{ color: "red" }}>
+                            {errorSimulation}
+                        </p>
+                    )}
+
+                    {simulation && (
+                        <div>
+                            <h4>Résultat de la simulation</h4>
+
+                            <p>
+                                <strong>Occupation avant :</strong>{" "}
+                                {simulation.occupationAvant} %
+                            </p>
+
+                            <p>
+                                <strong>Occupation estimée après :</strong>{" "}
+                                {simulation.occupationApres} %
+                            </p>
+
+                            <p>
+                                <strong>Niveau estimé après :</strong>{" "}
+                                {simulation.niveauEstimeApres}
+                            </p>
+                        </div>
+                    )}
+
+                    {loadingSimulation && (
+                        <p>Simulation en cours...</p>
+                    )}
+
+                    {errorSimulation && (
+                        <p style={{ color: "red" }}>
+                            {errorSimulation}
+                        </p>
+                    )}
+
+                    {simulation && (
+                        <div
+                            style={{
+                                marginTop: "12px",
+                                padding: "10px",
+                                background: "#f3f3f3",
+                                borderRadius: "4px",
+                            }}
+                        >
+                            <strong>Résultat de la simulation</strong>
+
+                            <p>
+                                Occupation avant :{" "}
+                                {simulation.occupationAvant} %
+                            </p>
+
+                            <p>
+                                Occupation après :{" "}
+                                {simulation.occupationApres.toFixed(1)} %
+                            </p>
+
+                            <p>
+                                Niveau estimé après :{" "}
+                                {simulation.niveauEstimeApres}
+                            </p>
+                            <button
+                                onClick={appliquerLaRegulation}
+                                disabled={applicationEnCours}
+                            >
+                                {applicationEnCours
+                                    ? "Application en cours..."
+                                    : "Appliquer cette régulation"}
+                            </button>
+                        </div>
+                    )}
                     <button
                         onClick={() => setTronconSelectionne(null)}
                     >
@@ -272,4 +572,8 @@ export default function RoadMap() {
 
         </div>
     );
+
+
 }
+
+
