@@ -229,4 +229,50 @@ public class CongestionService {
                             return dto;
                         }));
     }
+
+    @Transactional
+    public void actualiserApresRegulation(Long tronconId, String typeAction) {
+
+        Congestion congestion = congestionRepository
+                .findByTronconId(tronconId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Aucune congestion trouvée pour ce tronçon"));
+
+        double occupationAvant = congestion.getTauxOccupation();
+        double occupationApres;
+
+        if ("OUVRIR_VOIE".equalsIgnoreCase(typeAction)) {
+            occupationApres = occupationAvant * 0.80;
+        } else if ("FERMER_VOIE".equalsIgnoreCase(typeAction)) {
+            occupationApres = occupationAvant * 1.20;
+        } else {
+            throw new IllegalArgumentException(
+                    "Type d'action non pris en charge");
+        }
+
+        occupationApres = Math.min(100, Math.max(0, occupationApres));
+
+        String niveauApres;
+
+        if (occupationApres < 50
+                && congestion.getVitesseMoyenne() >= 40) {
+
+            niveauApres = "FLUIDE";
+
+        } else if (occupationApres < 75
+                && congestion.getVitesseMoyenne() >= 25) {
+
+            niveauApres = "MOYEN";
+
+        } else {
+
+            niveauApres = "SATURE";
+        }
+
+        congestion.setTauxOccupation(occupationApres);
+        congestion.setNiveau(CongestionNiveau.valueOf(niveauApres));
+        congestion.setDateCalcul(LocalDateTime.now());
+
+        congestionRepository.save(congestion);
+    }
 }
