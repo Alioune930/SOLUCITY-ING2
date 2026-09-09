@@ -49,7 +49,9 @@ export default function MapView() {
             </div>
 
             <h1 style={{ textAlign: "center", margin: "10px 0", fontSize: "20px", fontWeight: "bold" }}>
-                Honfleur – Real-Time Environmental Indicators
+                {mode === "RoadMap"
+                    ? "Honfleur – Real-Time Road Traffic"
+                    : "Honfleur – Real-Time Environmental Indicators"}
             </h1>
 
             <div style={{ flexGrow: 1 }}>
